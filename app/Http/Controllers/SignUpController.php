@@ -24,12 +24,25 @@ class SignUpController extends Controller
         $username = $request->username;
         $password = $request->password;
         $password2 = $request->password2;
+        $captcha = $request->captcha;
 
         $check_email = User::where('email', $email)
                         ->get();
         
         $check_username = User::where('email', $username)
                             ->get();
+        
+        
+        //if captcha not checked then reject 
+        if($captcha !== 'checked'){
+            $msg ="Captcha must be used";
+            //$data = new AuthUser();
+            $referral = $request->referral;
+            $data = $request;
+
+            return view('signup', ['msg' => $msg, 'data' => $data, 'referral' => $referral]);
+        }
+
         //check passwords
         if($password !== $password2){
 
@@ -55,6 +68,24 @@ class SignUpController extends Controller
             //make api call here
 
             //if payment is made successfully persist data
+            //hash password
+
+            $hashed = password_hash($password, PASSWORD_DEFAULT);
+            //get referral
+            exit;
+            if (($request->referral) == 'No Sponsor'){
+
+                $refer = 'Awazone';
+            }else{
+                $refer = $request->referral;
+            }
+            $user = new User;
+
+            $user->username = $request->username;
+            $user->name = $request->fullname;
+            $user->phone_number = $request->phone_number;
+            $user->email = $request->email;
+            $user->referral = $refer;
 
             //send email to user
 

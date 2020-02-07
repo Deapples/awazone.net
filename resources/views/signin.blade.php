@@ -9,7 +9,7 @@
     alt="awazone image" />
     {{@csrf_field()}}
     <div class="field"> <i class="fa fa-user"></i><input type="text" name="user" placeholder=" Username / Email" /></div>
-    <div class="field"><i class="fa fa-key"></i><input type="password" name="user" placeholder=" Password" /></div>
+    <div class="field"><i class="fa fa-key"></i><input type="password" name="password" placeholder=" Password" /></div>
 
     <div id="captcha">
     <div class="g-recaptcha" name='captcha' data-sitekey="6Ldks5MUAAAAAKahIjEBfG_bTXNTZtvElfcrNydt"></div>

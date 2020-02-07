@@ -14,6 +14,7 @@
 Route::get('/', 'Homecontroller@home');
 
 Route::get('/signin', 'LoginController@login_page');
+Route::post('/signin', 'LoginController@login');
 
 //sign up routes
 

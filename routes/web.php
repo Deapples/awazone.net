@@ -12,3 +12,10 @@
 */
 
 Route::get('/', 'Homecontroller@home');
+
+Route::get('/signin', 'LoginController@login_page');
+
+//sign up routes
+
+Route::get('/signup', 'SignUpController@page');
+Route::post('/signup', 'SignUpController@signup');

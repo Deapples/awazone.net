@@ -1,0 +1,115 @@
+@import 'variables';
+
+
+body{
+    font-family: Raleway;
+      /* Background Gradient for Analagous Colors */
+   /* fallback for old browsers */
+   background: -webkit-linear-gradient(to right, $nd-color, $awa-color);  /* Chrome 10-25, Safari 5.1-6 */
+   background: linear-gradient(to right, $nd-color,$awa-color); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    color: $white;
+    font-weight: lighter;
+  
+   form{
+          margin-left: 15%;
+          font-size: smaller;
+          #captcha{
+              margin-left: 10% ;
+  
+          }
+          button{
+              background: $white;
+              color: $awa-color;
+              border-radius: 12px;
+              border: 0px;
+              width: 40%;
+              height: 2em;
+              margin-top: 2%;
+              margin-left: 22%;
+          }
+  
+          img{
+              width: 10em;
+              height: auto;
+              margin: 5%;
+              margin-left: 17%;;
+          }
+
+          .field{
+            background: $white;
+            height: auto;
+            width:70%;
+            border-radius: 12px;
+            margin: 2%;
+            margin-left: 9%;
+            i{
+                color: $textColor;
+                margin-left: 3%;
+                margin-right: 2%;
+            }
+            input{
+                border-radius: 12px;
+                border: none;
+                height: 25px;
+                width: 85%;
+                color: $textColor;
+            }
+            input:onclick{
+                border: none;
+            }
+        }
+        input[type='checkbox']{
+            margin-left: 9%;
+        }
+        h3{
+            margin-left: 8%;
+            font-weight: lighter;
+            a{
+                text-decoration: none;
+                color: $nd-color;
+            }
+        }
+
+        #message{
+            width: 70%;
+            height: 3em;
+            margin-left: 10%;
+            background: $red;
+            text-align: center;
+        }
+
+   }
+   @media (min-width: 750px) {
+       form{
+           margin-left: 30%;
+           button{
+            width: 30%;
+            height: 3em;
+            margin-left: 12%;
+        }
+        img{
+            width: 10em;
+            margin: 5%;
+            margin-left: 17%;;
+        }
+        .field{
+            width:36%;
+            i{
+                color: $textColor;
+                margin-left: 3%;
+                margin-right: 2%;
+            }
+            input{
+                height: 35px;
+            }
+            input:onclick{
+                border: none;
+            }
+        }
+        #message{
+            width: 35%;
+        }
+       }
+   }
+   
+}

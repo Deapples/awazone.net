@@ -6,7 +6,7 @@
 
 
 <p>Username: {{session_id()}}</p>
-<p><a href="/logout">logout</a> {{session_destroy()}}</p>
+<p><a href="/logout">logout</a></p>
 
 
 

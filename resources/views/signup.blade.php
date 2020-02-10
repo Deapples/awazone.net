@@ -28,13 +28,7 @@
                     <div class="field"> <i class="fa fa-envelope"></i><input type="email" name="email" value="{{$data->email}}" placeholder="  Email Address" required/></div>
                     <div class="field"><i class="fa fa-phone"></i><input type="number" name="phone_number" value="{{$data->phone_number}}" placeholder=" Phone Number" required/></div>
                     <div class="field"><i class="fa fa-handshake"></i><input type="text" name="referral"  placeholder=" Referred By"
-                    value="@if(isset($refferal))
-                    {{$refferal}}
-                    @else
-                            {{'No Sponsor'}}
-                            @endif
-                    
-                    "/></div>
+                    value="{{$data->refferal}}"/></div>
                     <div class="field"> <i class="fa fa-key"></i><input type="password" name="password" placeholder=" Password" required/></div>
                     <div class="field"><i class="fa fa-key"></i><input type="password" name="password2" placeholder=" Confirm Password" required/></div>
 
@@ -73,14 +67,7 @@
     <div class="field"><i class="fa fa-user"></i><input type="text" name="fullname" placeholder=" Fullname" required/></div>
     <div class="field"> <i class="fa fa-envelope"></i><input type="email" name="email" placeholder="  Email Address" required/></div>
     <div class="field"><i class="fa fa-phone"></i><input type="number" name="phone_number" placeholder=" Phone Number" required/></div>
-    <div class="field"><i class="fa fa-handshake"></i><input type="text" name="referral" placeholder=" Referred By"
-     value="@if(isset($refferal))
-                {{$refferal}}
-            @else
-            {{'No Sponsor'}}
-            @endif
-     
-     "/></div>
+    <div class="field"><i class="fa fa-handshake"></i><input type="text" name="referral" placeholder=" Referred By"/></div>
     <div class="field"> <i class="fa fa-key"></i><input type="password" name="password" placeholder=" Password" required/></div>
     <div class="field"><i class="fa fa-key"></i><input type="password" name="password2" placeholder=" Confirm Password" required/></div>
 

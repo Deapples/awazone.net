@@ -24,6 +24,12 @@ class LoginController extends Controller
         $check = User::where('username', $user)
                  ->orWhere('email', $user)
                  ->get();
+        //check captcha
+        /*if ($request->captcha != 'checked'){
+            $msg ="Captcha must be checked";
+
+            return view('signin', ['message' => $msg]);
+        }*/
         
         if(count($check) > 0){
             //check passsword

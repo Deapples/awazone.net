@@ -73,7 +73,7 @@ class SignUpController extends Controller
             $hashed = password_hash($password, PASSWORD_DEFAULT);
             //get referral
             exit;
-            if (($request->referral) == 'No Sponsor'){
+            if (($request->referral) == ' '){
 
                 $refer = 'Awazone';
             }else{

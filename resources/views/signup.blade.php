@@ -4,7 +4,7 @@
 
 @section('content')
 <link rel="stylesheet" href="{{URL::asset('css/signin.css') }}" >
-<form action="/signup" method="POST">
+<form action="/signuserup" method="POST">
 <img src="https://res.cloudinary.com/ezeko/image/upload/v1581001963/images/logo_awazone_lp7usp.png" 
         alt="awazone network partner" name="awa-image" />
         <!--if there is information in the sent view-->
@@ -43,7 +43,7 @@
                         <button type="submit">SIGNUP NOW</button>
                     </div>
                     <div> 
-                        <h3>I have an account already <a href="/signin"> Signin </a></h3>
+                        <h3>I have an account already <a href="/login"> Signin </a></h3>
                         
                     </div>
                 </form>

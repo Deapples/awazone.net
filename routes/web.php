@@ -13,10 +13,19 @@
 
 Route::get('/', 'Homecontroller@home');
 
-Route::get('/signin', 'LoginController@login_page');
+Route::get('/login', 'LoginController@login_page');
 Route::post('/signin', 'LoginController@login');
+
+//dashboard
+
+Route::get('/dashboard', 'DashboardController@dash');
+
+Route::get('/logout', 'LogoutController@logout');
 
 //sign up routes
 
 Route::get('/signup', 'SignUpController@page');
-Route::post('/signup', 'SignUpController@signup');
+Route::post('/signuserup', 'SignUpController@signup');
+
+
+Route::get('/mat', 'MatricesController@makeMatrix');

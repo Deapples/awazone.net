@@ -4,7 +4,7 @@
 
 @section('content')
 <link rel="stylesheet" href="{{URL::asset('css/styles.css') }}" >
-<form>
+<form method="POST" action="/signin">
     <img src="https://res.cloudinary.com/ezeko/image/upload/v1581001974/images/logo_r5tpwx.png" 
     alt="awazone image" />
     {{@csrf_field()}}

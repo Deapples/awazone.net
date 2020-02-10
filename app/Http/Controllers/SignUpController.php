@@ -14,6 +14,9 @@ class SignUpController extends Controller
         return view('signup');
     }
 
+
+
+
     /**
      * Send Form data
      * Process it
@@ -33,7 +36,7 @@ class SignUpController extends Controller
                             ->get();
         
         
-        //if captcha not checked then reject 
+       /* //if captcha not checked then reject 
         if($captcha !== 'checked'){
             $msg ="Captcha must be used";
             //$data = new AuthUser();
@@ -41,26 +44,26 @@ class SignUpController extends Controller
             $data = $request;
 
             return view('signup', ['msg' => $msg, 'data' => $data, 'referral' => $referral]);
-        }
+        }*/
 
         //check passwords
         if($password !== $password2){
 
             $msg ="Password does not match";
             //$data = new AuthUser();
-            $referral = $request->referral;
+           
             $data = $request;
 
-            return view('signup', ['msg' => $msg, 'data' => $data, 'referral' => $referral]);
+            return view('signup', ['msg' => $msg, 'data' => $data]);
 
         }else  if (count($check_email) > 0 ){
         //if email already exist in the database reject user
        
             $msg = 'Email already Exist';
-            return view('signup', ['message' => $msg]);
+            return view('signup', ['msg' => $msg]);
         }else if(count($check_username) > 0){
             $msg = 'Username already Exist';
-            return view('signup', ['message' => $msg]);
+            return view('signup', ['msg' => $msg]);
         }else{
             /**
              * make payment of 10,500 to printmoney
@@ -68,11 +71,12 @@ class SignUpController extends Controller
             //make api call here
 
             //if payment is made successfully persist data
+           
             //hash password
 
             $hashed = password_hash($password, PASSWORD_DEFAULT);
             //get referral
-            exit;
+            
             if (($request->referral) == ' '){
 
                 $refer = 'Awazone';
@@ -81,21 +85,32 @@ class SignUpController extends Controller
             }
             $user = new User;
 
-            $user->username = $request->username;
+            
             $user->name = $request->fullname;
-            $user->phone_number = $request->phone_number;
             $user->email = $request->email;
+            $user->username = $request->username;
             $user->referral = $refer;
+            $user->phone_number = $request->phone_number;
+            
+            $user->balance = 10500;
+            
+            $user->password = $hashed;
 
+
+            $saved = $user->save();
+
+            if($saved){
             //send email to user
 
             //send message
-
+            return redirect('/login');
+        }else{
             //else
             $msg ="Payment not Successful";
             $data = User::findOrFail($username);
 
-            return view('signup', ['message' => $msg, 'data' => $data]);
+            return view('signup', ['msg' => $msg, 'data' => $data]);
+    }
         }
     }
 }

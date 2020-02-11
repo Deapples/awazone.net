@@ -129,15 +129,15 @@ class SignUpController extends Controller
         
                 //user id
                 $usr = User::where('username', $username);
-                $user_id = $usr[0]->id;
+                $user_id = $usr->id;
                 
 
                     // pair user
                 $parent = User::where('username',$refer);
-                $parent_id = $parent[0]->id;
+                $parent_id = $parent->id;
 
-                $root = User::where('username', $parent[0]->referral);
-                $root_id = $root[0]->id;
+                $root = User::where('username', $parent->referral);
+                $root_id = $root->id;
 
                 $pair = new Pair();
                 $pair->user_id = $user_id;

@@ -126,25 +126,47 @@ class SignUpController extends Controller
             $saved = $user->save();
 
             if($saved){
+
         
-                //user id
-                $usr = User::where('username', $username);
-                $user_id = $usr->id;
+                        //user id
+                $usr = User::where('username', $username)
+                ->get();
+                $user_id = $usr[0]->id;
                 
 
                     // pair user
-                $parent = User::where('username',$refer);
-                $parent_id = $parent->id;
+                $parent = User::where('username',$refer)->get();
+                $parent_id = $parent[0]->id;
 
-                $root = User::where('username', $parent->referral);
-                $root_id = $root->id;
+                $root = User::where('username', $parent[0]->referral)->get();
+                $root_id = $root[0]->id;
+
+                //get position
+                
+                $pos = Pair::where('parent_id', $parent_id)->get();
+
+                $where = $pos[0]->postion;
+
+                if (($where == 'left') && '' || ''){
+
+                    $position = 'right';
+                    
+
+                }else{
+                    $position = 'left';
+                }
+
+                
 
                 $pair = new Pair();
                 $pair->user_id = $user_id;
                 $pair->referral = $refer;
                 $pair->parent_id = $parent_id;
                 $pair->root_id = $root_id;
-                $pair->save();
+                $pair->position = $position;
+                $pair->stage = 1;
+                $pair->level = 0;
+                $pair->save();     
                 //send email to user
 
                 //send message

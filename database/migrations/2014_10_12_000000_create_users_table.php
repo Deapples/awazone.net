@@ -19,7 +19,9 @@ class CreateUsersTable extends Migration
             $table->string('email', 191)->unique();
             $table->string('username',191)->unique();
             $table->string('referral');
+            $table->string('num_of_referred')->default(0);
             $table->string('phone_number', 12)->unique();
+            $table->string('referral_bonus')->default(0);
             $table->string('balance')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

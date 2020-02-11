@@ -27,6 +27,7 @@ class SignUpController extends Controller
         $username = $request->username;
         $password = $request->password;
         $password2 = $request->password2;
+        $phone_number = $request->phone_number;
         $captcha = $request->captcha;
 
         $check_email = User::where('email', $email)
@@ -34,7 +35,8 @@ class SignUpController extends Controller
         
         $check_username = User::where('email', $username)
                             ->get();
-        
+        $check_phone = User::where('phone_number', $phone_number)
+        ->get();
         
        /* //if captcha not checked then reject 
         if($captcha !== 'checked'){
@@ -61,6 +63,11 @@ class SignUpController extends Controller
        
             $msg = 'Email already Exist';
             return view('signup', ['msg' => $msg]);
+        }else  if (count($check_phone) > 0 ){
+            //if email already exist in the database reject user
+        
+            $msg = 'Phone number already Exist';
+            return view('signup', ['msg' => $msg]);
         }else if(count($check_username) > 0){
             $msg = 'Username already Exist';
             return view('signup', ['msg' => $msg]);
@@ -77,12 +84,21 @@ class SignUpController extends Controller
             $hashed = password_hash($password, PASSWORD_DEFAULT);
             //get referral
             
-            if (($request->referral) == ' '){
+            if (($request->referral) == ""){
 
                 $refer = 'Awazone';
             }else{
                 $refer = $request->referral;
             }
+
+            //pay referral bonus
+            $pay = User::where('username', $refer)
+                ->update(['referral_bonus' => '500']);
+            //if(!($pay)){
+                
+           // }
+
+            //save user
             $user = new User;
 
             
@@ -91,8 +107,9 @@ class SignUpController extends Controller
             $user->username = $request->username;
             $user->referral = $refer;
             $user->phone_number = $request->phone_number;
+            $user->referral_bonus = 0;
             
-            $user->balance = 10500;
+            $user->balance = 0;
             
             $user->password = $hashed;
 

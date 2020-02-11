@@ -20,8 +20,8 @@ class CreatePairsTable extends Migration
             $table->string('parent_id');
             $table->string('root_id');
             $table->enum('position',['left', 'right','top']);
-            $table->string('right_child');
-            $table->string('left_child');
+            $table->string('ref_bonus');
+            $table->string('matching_bonus');
             $table->string('stage');
             $table->string('level');
             $table->timestamps();

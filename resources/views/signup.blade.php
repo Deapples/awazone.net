@@ -82,7 +82,7 @@
         <button type="submit">SIGNUP NOW</button>
     </div>
     <div> 
-        <h3>I have an account already <a href="/signin"> Signin </a></h3>
+        <h3>I have an account already <a href="/login"> Signin </a></h3>
         
     </div>
 </form>

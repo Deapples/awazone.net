@@ -143,11 +143,11 @@ class SignUpController extends Controller
 
                 //get position
                 
-                $pos = Pair::where('parent_id', $parent_id)->get();
+                $pos = Pair::where('parent_id', $parent_id)->get()->last();
 
                 $where = $pos[0]->postion;
 
-                if (($where == 'left') && '' || ''){
+                if (($where == 'left')){
 
                     $position = 'right';
                     

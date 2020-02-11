@@ -5,8 +5,12 @@
 @section('content')
 
 
-<p>Username: {{session_id()}}</p>
-<p><a href="/logout">logout</a></p>
+<p>Username: {{session('id')}}</p>
+<p>Status: {{(session('id')!== null)}}</p>
+<form action="/logout" method="post">
+    {{@csrf_field()}}
+<p><button>logout</button></p>
+</form>
 
 
 

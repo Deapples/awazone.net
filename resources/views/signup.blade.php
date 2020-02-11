@@ -4,7 +4,7 @@
 
 @section('content')
 <link rel="stylesheet" href="{{URL::asset('css/signin.css') }}" >
-<form action="/signuserup" method="POST">
+<form action="/signup" method="POST">
 <img src="https://res.cloudinary.com/ezeko/image/upload/v1581001963/images/logo_awazone_lp7usp.png" 
         alt="awazone network partner" name="awa-image" />
         <!--if there is information in the sent view-->

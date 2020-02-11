@@ -7,9 +7,8 @@ use Illuminate\Http\Request;
 class LogoutController extends Controller
 {
     //
-    public function logout(){
-        session_start();
-        session_destroy();
-        return redirect('/signin');
+    public function logout(Request $request){
+        $request->session()->forget('id');
+        return redirect('/login');
     }
 }

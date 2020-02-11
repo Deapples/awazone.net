@@ -20,12 +20,12 @@ Route::post('/signin', 'LoginController@login');
 
 Route::get('/dashboard', 'DashboardController@dash');
 
-Route::get('/logout', 'LogoutController@logout');
+Route::post('/logout', 'LogoutController@logout');
 
 //sign up routes
 
 Route::get('/signup', 'SignUpController@page');
-Route::post('/signuserup', 'SignUpController@signup');
+Route::post('/signup', 'SignUpController@signup');
 
 
 Route::get('/mat', 'MatricesController@makeMatrix');

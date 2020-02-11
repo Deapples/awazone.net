@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Pair;
 use App\User;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Auth\User as AuthUser;
@@ -60,17 +61,24 @@ class SignUpController extends Controller
 
         }else  if (count($check_email) > 0 ){
         //if email already exist in the database reject user
-       
+             $data = $request;
+
             $msg = 'Email already Exist';
-            return view('signup', ['msg' => $msg]);
+            return view('signup', ['msg' => $msg, 'data' => $data]);
         }else  if (count($check_phone) > 0 ){
             //if email already exist in the database reject user
+
+
+            $data = $request;
+
         
             $msg = 'Phone number already Exist';
-            return view('signup', ['msg' => $msg]);
+            return view('signup', ['msg' => $msg, 'data' => $data]);
         }else if(count($check_username) > 0){
+            $data = $request;
+
             $msg = 'Username already Exist';
-            return view('signup', ['msg' => $msg]);
+            return view('signup', ['msg' => $msg, 'data' => $data]);
         }else{
             /**
              * make payment of 10,500 to printmoney
@@ -93,7 +101,11 @@ class SignUpController extends Controller
 
             //pay referral bonus
             $pay = User::where('username', $refer)
-                ->update(['referral_bonus' => '500']);
+                        ->get();
+            $bonus = $pay[0]->referral_bonus + 500;
+
+           User::where('username', $refer)
+                ->update(['referral_bonus'=> $bonus]);
             //if(!($pay)){
                 
            // }
@@ -108,23 +120,39 @@ class SignUpController extends Controller
             $user->referral = $refer;
             $user->phone_number = $request->phone_number;
             $user->referral_bonus = 0;
-            
+            $user->match_bonus = 0;
             $user->balance = 0;
-            
             $user->password = $hashed;
-
-
             $saved = $user->save();
 
             if($saved){
-            //send email to user
+        
+                //user id
+                $usr = User::where('username', $username);
+                $user_id = $usr[0]->id;
+                
 
-            //send message
-            return redirect('/login');
-        }else{
+                    // pair user
+                $parent = User::where('username',$refer);
+                $parent_id = $parent[0]->id;
+
+                $root = User::where('username', $parent[0]->referral);
+                $root_id = $root[0]->id;
+
+                $pair = new Pair();
+                $pair->user_id = $user_id;
+                $pair->referral = $refer;
+                $pair->parent_id = $parent_id;
+                $pair->root_id = $root_id;
+                $pair->save();
+                //send email to user
+
+                //send message
+                return redirect('/login');
+                }else{
             //else
             $msg ="Payment not Successful";
-            $data = User::findOrFail($username);
+            $data = $request;
 
             return view('signup', ['msg' => $msg, 'data' => $data]);
     }

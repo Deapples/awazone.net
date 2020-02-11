@@ -36,8 +36,11 @@ class LoginController extends Controller
          if(password_verify($password, $check[0]->password)){
              //create session and login
              session_start();
-             $session_id = session('id', $check[0]->id);
-             return redirect('/dashboard', ['session_id' => $session_id]);
+             // Specifying a default value...
+             
+             session(['id' => $check[0]->id]);
+             
+             return redirect('/dashboard');
 
             }else{//password incorrect
                 $msg ="Password does not match for this User";

@@ -19,8 +19,8 @@ class MatricesController extends Controller
          ->get();
          $user_id = $usr[0]->id;
          
-        $c = Pair::where('parent_id', '=' , $parent_id)->get()->last();
-        return $c;
+        $c = User::where('referral', '=' , $refer)->get();
+        return count($c); exit;
         if($c->position !== 'left'){
             $pos = "right";
            

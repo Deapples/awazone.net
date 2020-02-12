@@ -141,6 +141,13 @@ class SignUpController extends Controller
                 $root = User::where('username', $parent[0]->referral)->get();
                 $root_id = $root[0]->id;
 
+                //check or the number of referrals
+                $check = User::where('referral', $refer)->get();
+                $refered = count($check);
+
+                if($refered < 2){
+
+                    //if referred 2 users update level to 1
                 //get position
                 
                 $pos = Pair::where('parent_id', '=', $parent_id)->get()->last();
@@ -148,14 +155,16 @@ class SignUpController extends Controller
                 if($pos->position == 'left'){
 
                     $position = 'right';
-                    
 
                 }else if($pos->position == "right"){
                     $position = 'float';
                 }else{
                     $position = 'left';
                 }
-
+            }else{
+                //auto pair user
+                //check database for the first person without referral
+            }
                 
 
                 $pair = new Pair();

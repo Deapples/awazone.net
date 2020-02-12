@@ -24,6 +24,8 @@ class CreateUsersTable extends Migration
             $table->integer('referral_bonus',false, 11)->default(0);
             $table->integer('match_bonus',false, 11)->default(0);
             $table->integer('balance')->default(0);
+            $table->enum('status',['uncleared', 'cleared']);
+            $table->enum('status',['false', 'true'])->default(false);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

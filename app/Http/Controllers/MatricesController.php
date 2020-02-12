@@ -19,7 +19,7 @@ class MatricesController extends Controller
          ->get();
          $user_id = $usr[0]->id;
          
-        $c = User::where('referral', '=' , $refer)->get();
+        $c = User::where('referral', '=' , $refer)->where('phone_number', '07068006837')->get();
         return count($c); exit;
         if($c->position !== 'left'){
             $pos = "right";

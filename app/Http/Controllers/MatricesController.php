@@ -13,12 +13,20 @@ class MatricesController extends Controller
     function makeMatrix(){
         $username = 'vero';
         $refer = 'Awazone';
+        $parent_id = 2;
          //user id
          $usr = User::where('username', $username)
          ->get();
          $user_id = $usr[0]->id;
          
-
+        $c = Pair::where('parent_id', '=' , $parent_id)->get()->last();
+        return $c;
+        if($c->position !== 'left'){
+            $pos = "right";
+           
+        }else{
+            $pos = 'left';
+        };   echo $pos; exit;
              // pair user
          $parent = User::where('username',$refer)->get();
          $parent_id = $parent[0]->id;

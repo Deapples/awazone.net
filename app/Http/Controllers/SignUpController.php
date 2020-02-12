@@ -34,7 +34,7 @@ class SignUpController extends Controller
         $check_email = User::where('email', $email)
                         ->get();
         
-        $check_username = User::where('email', $username)
+        $check_username = User::where('username', $username)
                             ->get();
         $check_phone = User::where('phone_number', $phone_number)
         ->get();
@@ -143,15 +143,15 @@ class SignUpController extends Controller
 
                 //get position
                 
-                $pos = Pair::where('parent_id', $parent_id)->get()->last();
+                $pos = Pair::where('parent_id', '=', $parent_id)->get()->last();
 
-                $where = $pos[0]->postion;
-
-                if (($where == 'left')){
+                if($pos->position == 'left'){
 
                     $position = 'right';
                     
 
+                }else if($pos->position == "right"){
+                    $position = 'float';
                 }else{
                     $position = 'left';
                 }

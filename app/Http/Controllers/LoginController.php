@@ -45,12 +45,16 @@ class LoginController extends Controller
             }else{//password incorrect
                 $msg ="Password does not match for this User";
 
-            return view('signin', ['message' => $msg]);
+                 echo "<script>alert('$msg'); window.location=('/login');</script>";
+
+            //return view('signin', ['message' => $msg]);
             }
         }else{//not a user
             $msg ="$user not a Registered User";
 
-            return view('signin', ['message' => $msg]);
+            echo "<script>alert('$msg'); window.location=('/login');</script>";
+
+            //return view('signin', ['message' => $msg]);
         }
 
      }

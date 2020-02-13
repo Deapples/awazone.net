@@ -146,38 +146,92 @@ class SignUpController extends Controller
                 $status = $check->status;
                 $refered = count($check);
 
-                        if($refered >0 && $refered < 3){
+                        if($refered >0 && $refered < 3 && $status != "cleared"){
 
-                            //if referred 2 users update level to 1
-                        
-                        //get position
-                        
-                        $pos = Pair::where('parent_id', '=', $parent_id)->get()->last();
+                                //if referred 2 users update level to 1
+                            
+                            //get position
+                            
+                            $pos = Pair::where('parent_id', '=', $parent_id)->get()->last();
 
-                        if($pos->position == 'left'){
+                            if($pos->position == 'left'){
 
-                            $position = 'right';
-                            User::where('id', $parent_id)->update(['status' => 'cleared', 'paired'=> true]);
+                                $position = 'right';
+                                User::where('id', $parent_id)->update(['status' => 'cleared', 'paired'=> true]);
 
-                        }/*else if($pos->position == "right"){
-                            $position = 'float';
-                        }*/else{
-                            $position = 'left';
-                        }
-                    }else if($refered == 2 && $status == 'cleared'){
-                        //auto pair user
-                        //check database for the first person without referral
-                        $db = User::where('status', '=', 'uncleared')->get()->first();
-                        $parent_id = $db->id;
+                            }/*else if($pos->position == "right"){
+                                $position = 'float';
+                            }*/else{
+                                $position = 'left';
+                            }
+                            //if cleared and referred 2, auto
+                    }else if($refered > 2 && $status == 'cleared'){
+                            //auto pair user
+                            //check database for the first person without referral
+                            $db = User::where('status', '=', 'uncleared')->get()->first();
+                            $parent_id = $db->id;
 
-                        //set root 
-                        $root = User::where('username', $db->referral)->get();
-                        $root_id = $root[0]->id;
+                            //set root 
+                            $root = User::where('username', $db->referral)->get();
+                            $root_id = $root[0]->id;
 
-                    }else if($status == 'uncleared' && $refered<1){
+                            $pos = Pair::where('parent_id', '=', $parent_id)->get()->last();
+
+                            if($pos->position == 'left'){
+
+                                $position = 'right';
+                                User::where('id', $parent_id)->update(['status' => 'cleared']);
+
+                            }else{
+                                $position = 'left';
+                            }
+
+                    }else if($status == 'uncleared' && $refered>0){
                         switch($refered){
                             case(1): //if one user is referred by someone already cleared
+                                 //auto pair user
+                            //check database for the first person without referral
+                            $db = User::where('paired', '=', false)->get()->first();
+                            $parent_id = $db->id;
+
+                            //set root 
+                            $root = User::where('username', $db->referral)->get();
+                            $root_id = $root[0]->id;
+
+                            $pos = Pair::where('parent_id', '=', $parent_id)->get()->last();
+
+                            if($pos->position == 'left'){
+
+                                $position = 'right';
+                                User::where('id', $parent_id)->update(['status' => 'cleared']);
+
+                            }else{
+                                $position = 'left';
+                            }
+
+                                    
                             case(2): //if user refers 2 users after being paired. Set staus to clear
+                                 //auto pair user
+                            //check database for the first person without referral
+                            $db = User::where('paired', '=', false)->get()->first();
+                            $parent_id = $db->id;
+
+                            //set root 
+                            $root = User::where('username', $db->referral)->get();
+                            $root_id = $root[0]->id;
+
+                            User::where('id', $parent_id)->update(['status' => 'cleared']);
+
+                            $pos = Pair::where('parent_id', '=', $parent_id)->get()->last();
+
+                            if($pos->position == 'left'){
+
+                                $position = 'right';
+                                
+
+                            }else{
+                                $position = 'left';
+                            }
                         }
 
 

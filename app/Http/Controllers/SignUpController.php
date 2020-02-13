@@ -143,59 +143,67 @@ class SignUpController extends Controller
 
                 //check or the number of referrals
                 $check = User::where('referral', $refer)->where()->get();
+                $status = $check->status;
                 $refered = count($check);
 
-                if($refered == 2){
+                        if($refered >0 && $refered < 3){
 
-                    //if referred 2 users update level to 1
-                
-                //get position
-                
-                $pos = Pair::where('parent_id', '=', $parent_id)->get()->last();
+                            //if referred 2 users update level to 1
+                        
+                        //get position
+                        
+                        $pos = Pair::where('parent_id', '=', $parent_id)->get()->last();
 
-                if($pos->position == 'left'){
+                        if($pos->position == 'left'){
 
-                    $position = 'right';
-                    User::where('id', $parent_id)->update(['status' => 'cleared']);
+                            $position = 'right';
+                            User::where('id', $parent_id)->update(['status' => 'cleared', 'paired'=> true]);
 
-                }else if($pos->position == "right"){
-                    $position = 'float';
-                }else{
-                    $position = 'left';
-                }
-            }else{
-                //auto pair user
-                //check database for the first person without referral
-                $db = User::where('status', '=', 'uncleared')->get()->first();
-                $parent_id = $db->id;
+                        }/*else if($pos->position == "right"){
+                            $position = 'float';
+                        }*/else{
+                            $position = 'left';
+                        }
+                    }else if($refered == 2 && $status == 'cleared'){
+                        //auto pair user
+                        //check database for the first person without referral
+                        $db = User::where('status', '=', 'uncleared')->get()->first();
+                        $parent_id = $db->id;
 
-                //set root 
-                $root = User::where('username', $db->referral)->get();
-                $root_id = $root[0]->id;
+                        //set root 
+                        $root = User::where('username', $db->referral)->get();
+                        $root_id = $root[0]->id;
 
+                    }else if($status == 'uncleared' && $refered<1){
+                        switch($refered){
+                            case(1): //if one user is referred by someone already cleared
+                            case(2): //if user refers 2 users after being paired. Set staus to clear
+                        }
+
+
+                    }
+                        
+
+                        $pair = new Pair();
+                        $pair->user_id = $user_id;
+                        $pair->referral = $refer;
+                        $pair->parent_id = $parent_id;
+                        $pair->root_id = $root_id;
+                        $pair->position = $position;
+                        $pair->stage = 1;
+                        $pair->level = 0;
+                        $pair->save();     
+                        //send email to user
+
+                        //send message
+                        return redirect('/login');
+                        }else{
+                    //else
+                    $msg ="Payment not Successful";
+                    $data = $request;
+
+                    return view('signup', ['msg' => $msg, 'data' => $data]);
             }
-                
-
-                $pair = new Pair();
-                $pair->user_id = $user_id;
-                $pair->referral = $refer;
-                $pair->parent_id = $parent_id;
-                $pair->root_id = $root_id;
-                $pair->position = $position;
-                $pair->stage = 1;
-                $pair->level = 0;
-                $pair->save();     
-                //send email to user
-
-                //send message
-                return redirect('/login');
-                }else{
-            //else
-            $msg ="Payment not Successful";
-            $data = $request;
-
-            return view('signup', ['msg' => $msg, 'data' => $data]);
-    }
         }
     }
 }

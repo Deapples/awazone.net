@@ -142,8 +142,8 @@ class SignUpController extends Controller
                 $root_id = $root[0]->id;
 
                 //check or the number of referrals
-                $check = User::where('referral', $refer)->where()->get();
-                $status = $check->status;
+                $check = User::where('referral', $refer)->get();
+                $status = $check[0]->status;
                 $refered = count($check);
 
                         if($refered >0 && $refered < 3 && $status != "cleared"){
@@ -152,9 +152,9 @@ class SignUpController extends Controller
                             
                             //get position
                             
-                            $pos = Pair::where('parent_id', '=', $parent_id)->get()->last();
+                            $pos = Pair::where('parent_id',  $parent_id)->get()->last();
 
-                            if($pos->position == 'left'){
+                            if($pos && $pos->position == 'left'){
 
                                 $position = 'right';
                                 User::where('id', $parent_id)->update(['status' => 'cleared', 'paired'=> true]);

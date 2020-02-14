@@ -29,3 +29,7 @@ Route::post('/signup', 'SignUpController@signup');
 
 
 Route::get('/mat', 'MatricesController@makeMatrix');
+
+//make payment for stage 1
+
+Route::get('/pay1', 'StageOnepaymentsController@payStageOne');

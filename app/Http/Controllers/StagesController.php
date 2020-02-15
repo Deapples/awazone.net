@@ -18,19 +18,49 @@ class StagesController extends Controller
 
             $parent = StageTwo::where('level', '<', 2)->get()->first();
             if((count($parent)) > 0){
-            $count = StageTwo::where('parent_id', $parent->id)->get();
+
+            $count = StageTwo::where('parent_id', $parent->user_id)->get();
+            $root_id = $count->parent_id;
 
             //if less than 1 set position to be left
             if((count($count)< 1 ) ){
+
+
                 $position = 'left';
-                //update level to be 1
-                StageTwo::where('user_id', $parent->user_id)->update(['level'=> 1]);
+
+                //insert into stageTwo table
+
+                $pair = new StageTwo();
+                $pair->user_id = $check->id;
+                $pair->referral = 'NA';
+                $pair->parent_id = $count->user_id;
+                $pair->root_id = $root_id;
+                $pair->position = $position;
+                $pair->stage = 2;
+                $pair->level = 1;
+                $pair->save();     
+             
+
+
             }else if((count($count))< 2){
+
+
                 $position = 'right';
-                //update users to be cleared
-                User::where('id', $check->id)->update(['stageTwo'=> 'cleared']);
                 //update level to be 2
-                StageTwo::where('user_id', $parent->user_id)->update(['level'=> 2]);
+                
+                $pair = new StageTwo();
+                $pair->user_id = $check->id;
+                $pair->referral = 'NA';
+                $pair->parent_id = $count->user_id;
+                $pair->root_id = $root_id;
+                $pair->position = $position;
+                $pair->stage = 2;
+                $pair->level = 2;
+                $pair->save();  
+
+                 //update users to be cleared
+                 User::where('id', $check->id)->update(['stageTwo'=> 'cleared']);
+
             }
         }else{
             //do nothing

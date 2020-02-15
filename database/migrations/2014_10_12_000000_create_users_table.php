@@ -20,12 +20,13 @@ class CreateUsersTable extends Migration
             $table->string('username',191)->unique();
             $table->string('referral');
             $table->string('num_of_referred')->default(0);
-            $table->string('phone_number', 12)->unique();
+            $table->string('phone_number', 13)->unique();
             $table->integer('referral_bonus',false, 11)->default(0);
             $table->integer('match_bonus',false, 11)->default(0);
-            $table->integer('balance')->default(0);
+            $table->integer('balance',false,11)->default(0);
             $table->enum('status',['uncleared', 'cleared']);
-            $table->enum('status',['false', 'true'])->default(false);
+            $table->boolean('paired')->default(false);
+            $table->integer('stage',false,11)->default(1);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

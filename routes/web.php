@@ -34,6 +34,12 @@ Route::get('/mat', 'MatricesController@makeMatrix');
 Route::get('/pay1', 'StageOnepaymentsController@payStageOne');
 //pay stage 2
 Route::get('/pay2', 'StageOnepaymentsController@payStageTwo');
+Route::get('/pay2', 'StageOnepaymentsController@payStageThree');
+Route::get('/pay2', 'StageOnepaymentsController@payStageFour');
+Route::get('/pay2', 'StageOnepaymentsController@payStageFive');
 
 //stage 2 pairing
 Route::get('/pair2', 'StagesController@stageTwo');
+Route::get('/pair2', 'StagesController@stageThree');
+Route::get('/pair2', 'StagesController@stageFour');
+Route::get('/pair2', 'StagesController@stageFive');

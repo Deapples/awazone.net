@@ -10,11 +10,15 @@ class StagesController extends Controller
 {
     //
     public function stageTwo(){
-        //set the person to be paired
+     
+          /* //set the person to be paired */
+        
         $parent = User::where('stage', 2)->where('stageTwo', 'uncleared')->first();
+        
+        if($parent){
         //check if the  first person to enter stage 2 has been paired
         $checkStage = User::where('stage', 2)->where('stageTwo', 'uncleared')->where('id', '!=', $parent->id )->get();
-       
+        
         //count where the user_id appears as parent Id
         foreach($checkStage as $check){
 
@@ -35,7 +39,7 @@ class StagesController extends Controller
                 $pair = new StageTwo();
                 $pair->user_id = $check->id;
                 $pair->referral = 'NA';
-                $pair->parent_id = $count->user_id;
+                $pair->parent_id = $parent->id;
                 $pair->root_id = $root_id;
                 $pair->position = $position;
                 $pair->stage = 2;
@@ -53,7 +57,7 @@ class StagesController extends Controller
                 $pair = new StageTwo();
                 $pair->user_id = $check->id;
                 $pair->referral = 'NA';
-                $pair->parent_id = $count->user_id;
+                $pair->parent_id = $parent->id;
                 $pair->root_id = $root_id;
                 $pair->position = $position;
                 $pair->stage = 2;
@@ -61,17 +65,23 @@ class StagesController extends Controller
                 $pair->save();  
 
                  //update users to be cleared
-                 User::where('id', $check->id)->update(['stageTwo'=> 'cleared']);
+                 User::where('id', $parent->id)->update(['stageTwo'=> 'cleared']);
 
+            }else{
+                //look for the next user
+                $parent = User::where('stage', 2)->where('stageTwo', 'uncleared')->first();
             }
-        }/*else{
+        /*}else{
             //do nothing
             //exit process
             exit;
-        }
         }*/
+        }
         
-        
+    }else{
+        echo "Nothing to pair";
+        die;
+    }
         //parent of your parent is your root
 
         

@@ -10,16 +10,18 @@ class StagesController extends Controller
 {
     //
     public function stageTwo(){
+        //set the person to be paired
+        $parent = User::where('stage', 2)->where('stageTwo', 'uncleared')->first();
         //check if the  first person to enter stage 2 has been paired
-        $checkStage = User::where('stage', 2)->where('stageTwo', 'uncleared')->get();
+        $checkStage = User::where('stage', 2)->where('stageTwo', 'uncleared')->where('id', '!=', $parent->id )->get();
        
         //count where the user_id appears as parent Id
         foreach($checkStage as $check){
 
-            $parent = StageTwo::where('level', '<', 2)->get()->first();
-            if((count($parent)) > 0){
+            /*$parent = StageTwo::where('parent_id', $parent->id)->where('level', '<', 2)->get()->first();
+            if((count($parent)) > 0){*/
 
-            $count = StageTwo::where('parent_id', $parent->user_id)->get();
+            $count = StageTwo::where('parent_id', $parent->id)->get();
             $root_id = $count->parent_id;
 
             //if less than 1 set position to be left
@@ -62,12 +64,12 @@ class StagesController extends Controller
                  User::where('id', $check->id)->update(['stageTwo'=> 'cleared']);
 
             }
-        }else{
+        }/*else{
             //do nothing
             //exit process
             exit;
         }
-        }
+        }*/
         
         
         //parent of your parent is your root

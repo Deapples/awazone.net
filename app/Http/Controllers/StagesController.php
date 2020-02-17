@@ -19,6 +19,7 @@ class StagesController extends Controller
         //check if the  first person to enter stage 2 has been paired
         $checkStage = User::where('stage', 2)->where('stageTwo', 'uncleared')->where('id', '!=', $parent->id )->get();
         
+        if ($checkStage){
         //count where the user_id appears as parent Id
         foreach($checkStage as $check){
 
@@ -77,6 +78,10 @@ class StagesController extends Controller
             exit;
         }*/
         }
+    }else{
+        echo "Nobodody to pair $parent->username with";
+        exit;
+    }
         
     }else{
         echo "Nothing to pair";

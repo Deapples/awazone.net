@@ -31,8 +31,9 @@ Route::post('/signup', 'SignUpController@signup');
 Route::get('/mat', 'MatricesController@makeMatrix');
 
 //make payment for stage 1
-
 Route::get('/pay1', 'StageOnepaymentsController@payStageOne');
+//pay stage 2
+Route::get('/pay2', 'StageOnepaymentsController@payStageTwo');
 
 //stage 2 pairing
 Route::get('/pair2', 'StagesController@stageTwo');

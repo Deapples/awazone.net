@@ -7,99 +7,68 @@ body{
  /* fallback for old browsers */
  background: -webkit-linear-gradient(to right, $nd-color, $awa-color);  /* Chrome 10-25, Safari 5.1-6 */
  background: linear-gradient(to right, $nd-color,$awa-color); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
- 
- 
  form{
-        margin-left: 30%;
-        #captcha{
-            margin-left: 10% ;
-
-        }
-        button{
-            background: $white;
-            color: $awa-color;
-            border-radius: 12px;
-            border: 0px;
-            width: 30%;
-            height: 3em;
-            margin-top: 2%;
-            margin-left: 12%;
-        }
-
-        img{
-            width: 10em;
-            height: auto;
-            margin: 5%;
-            margin-left: 17%;;
-        }
-        .field{
-            background: $white;
-            height: auto;
-            width:36%;
-            border-radius: 12px;
-            margin: 2%;
-            margin-left: 9%;
-            i{
-                color: $textColor;
-                margin-left: 3%;
-                margin-right: 2%;
-            }
-            input{
-                border-radius: 12px;
-                border: none;
-                height: 35px;
-                width: 85%;
-            }
-            input:onclick{
-                border: none;
-            }
-        }
-    }
-    h3{
-        color: $white;
-        margin-left: 12%;
-        font-weight: lighter;
-    }
-    a{
-        color: $nd-color;
-        text-decoration: none;
-        font-weight: lighter;
-    }
-}
-
-
-
-@media (max-width: 650px){
-    form{
-        margin-left: 0;
-        .field{
-            background: $white;
-            height: auto;
-            width:100%;
-            border-radius: 12px;
-            margin: 0%;
-            margin-left: 0;
-            i{
-                color: $textColor;
-                margin-left: 3%;
-                margin-right: 2%;
-            }
-            input{
-                border-radius: 12px;
-                border: none;
-                height: 15px;
-                width: 85%;
-            }
-    }
-}
-button{
+     margin: 5%;
+     text-align: center;
+     button{
+         border: none;
+         border-radius: 2rem;
+         color: rgb(75, 5, 75);
+         background: $white;
+         width: 15rem;
+         height: auto;
+         font-size: 200%;
+         margin-top: 1rem;
+     }
+     a{
+         text-decoration: none;
+         color: $nd-color;
+     }
+     h3{
+         color: $white;
+     }
+ }
+ img{
+     height: auto;
+     width: 5rem;
+     margin-bottom: 5%;
+ }
+ .field{
     background: $white;
-    color: $awa-color;
-    border-radius: 12px;
-    border: 0px;
-    width: 30%;
-    height: 3em;
-    margin-top: 2%;
-    margin-left: 1%;
-}
+    height: auto;
+    width:70%;
+    border-radius: 1rem;
+    margin: 2%;
+    margin-left: 19%;
+    i{
+        color: $textColor;
+        margin-left: 3%;
+        margin-right: 2%;
+    }
+    input{
+        border-radius: 1rem;
+        border: none;
+        height: 25px;
+        width: 85%;
+        color: $textColor;
+    }
+   
+ }
+ @media (min-width:750px){
+    form{
+        margin: 25%;
+        margin-top: 5%;
+        margin-bottom: 5%;
+        #captcha{
+            margin-left: 12rem;
+        }
+    }
+    img{
+        width: 8rem;
+    }
+    .field{
+        margin-left: 11rem;
+        width: 50%;
+    }
+ }
 }

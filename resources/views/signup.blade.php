@@ -33,7 +33,7 @@
                     <div class="field"><i class="fa fa-key"></i><input type="password" name="password2" placeholder=" Confirm Password" required/></div>
 
                     <div id="captcha">
-                    <div class="g-recaptcha" name='captcha' data-sitekey="6Ldks5MUAAAAAKahIjEBfG_bTXNTZtvElfcrNydt"></div>
+                    <div class="g-recaptcha" name='captcha' data-sitekey="6LcYANoUAAAAAG_iUiLg03dXtvagATFovyaWSufF"></div>
                     </div>
                     <div>
                     <input type="checkbox" name="check"  required/> I Agree to terms and conditions

@@ -12,7 +12,7 @@
     <div class="field"><i class="fa fa-key"></i><input type="password" name="password" placeholder=" Password" /></div>
 
     <div id="captcha">
-    <div class="g-recaptcha" name='captcha' data-sitekey="6Ldks5MUAAAAAKahIjEBfG_bTXNTZtvElfcrNydt"></div>
+    <div class="g-recaptcha" name='captcha' data-sitekey="6LcYANoUAAAAAG_iUiLg03dXtvagATFovyaWSufF"></div>
     </div>
     <div>
         <button type="submit">LOGIN NOW</button>

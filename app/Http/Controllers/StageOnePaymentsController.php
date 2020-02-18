@@ -53,7 +53,7 @@ class StageOnePaymentsController extends Controller
            
            $stage = StageTwo::where('stage', 2)->where('level', 2)->where('root_id', $passed->id)->get();
 
-        if((count($stage)) == 4 ){
+        if((count($stage)) == 8 ){
             $getBal = User::where('id', $passed->id)->get();
             $bonus = $getBal[0]->balance + 16800;
             //pay 
@@ -84,7 +84,7 @@ class StageOnePaymentsController extends Controller
            
            $stage = StageThree::where('stage', 3)->where('level', 2)->where('root_id', $passed->id)->get();
 
-        if((count($stage)) == 4 ){
+        if((count($stage)) == 8){
             $getBal = User::where('id', $passed->id)->get();
             $bonus = $getBal[0]->balance + 47040;
             //pay 
@@ -113,7 +113,7 @@ class StageOnePaymentsController extends Controller
            
            $stage = StageFour::where('stage', 4)->where('level', 2)->where('root_id', $passed->id)->get();
 
-        if((count($stage)) == 4 ){
+        if((count($stage)) == 8 ){
             $getBal = User::where('id', $passed->id)->get();
             $bonus = $getBal[0]->balance + 131712;
             //pay 
@@ -144,7 +144,7 @@ class StageOnePaymentsController extends Controller
            
            $stage = StageFive::where('stage', 5)->where('level', 2)->where('root_id', $passed->id)->get();
 
-        if((count($stage)) == 4 ){
+        if((count($stage)) == 8 ){
             $getBal = User::where('id', $passed->id)->get();
             $bonus = $getBal[0]->balance + 368000;
             //pay 

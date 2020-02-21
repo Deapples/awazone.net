@@ -43,3 +43,8 @@ Route::get('/pair2', 'StagesController@stageTwo');
 Route::get('/pair2', 'StagesController@stageThree');
 Route::get('/pair2', 'StagesController@stageFour');
 Route::get('/pair2', 'StagesController@stageFive');
+
+
+//get tree
+
+Route::get('/tree', 'TreesController@getTree');

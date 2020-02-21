@@ -18,9 +18,9 @@ body form button {
   border-radius: 2rem;
   color: #4b054b;
   background: #ffffff;
-  width: 15rem;
+  width: 13rem;
   height: auto;
-  font-size: 200%;
+  font-size: 120%;
   margin-top: 1rem;
 }
 
@@ -76,7 +76,7 @@ body .field input {
   }
   body .field {
     margin-left: 11rem;
-    width: 50%;
+    width: 40%;
   }
 }
 /*# sourceMappingURL=styles.css.map */

@@ -1,0 +1,10 @@
+{
+    "version": 3,
+    "mappings": "AAEA,AAAA,IAAI,CAAA;EACA,WAAW,EAAE,OAAO;CAQvB;;AATD,AAIQ,IAJJ,CAEA,KAAK,CAED,QAAQ,CAAA;EACJ,OAAO,EAAE,IAAI;CAChB",
+    "sources": [
+        "dash.scss",
+        "_variables.scss"
+    ],
+    "names": [],
+    "file": "dash.css"
+}

@@ -2,11 +2,71 @@
 
 body{
     font-family: Raleway;
+    #body{
+        display: flex;
+        width: auto;
+    }
     aside{
-        
-        .display{
+        font-family: Raleway;
+        /* Background Gradient for Analagous Colors */
+        /* fallback for old browsers */
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: -webkit-gradient(linear, left top, right top, from(#16bcbb), to(#1d2253));
+        background: linear-gradient(to left, #16bcbb, #1d2253);
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        width: 20rem;
+        height: 39rem;
+        color: $white;
+        font-weight: lighter;
+        padding-top: 1rem;
+        display: none;
+        #cancel{
+            font-size: 3rem;
+            margin: 2%;
+            margin-left: 17rem;
+            z-index: 1;
+        }
+        p{
+        margin-left: 3rem;
+       
+        a{
+            text-decoration: none;
+            color: $white;
+        }
+        }
+        button{
+            background: none;
+            color: $white;
+            border: none;
+            margin: 8rem;
+            margin-right: 1rem;
+            float: right;
+        }
+        #pro{
+             i{
+            font-size:8rem;
+        }
+        }
+    }
+    nav{
+        margin-left: 19rem;
+        display: flex;
+       
+    }
+    main{
+        margin-left: 5rem;
+    }
+    @media (min-width: 750px){
+        //do not display navbar in bigger screens
+        #cancel{
             display: none;
         }
-    
+        nav{
+             display: none;
+             
+        }
+        aside{
+            display:block;
+        }
     }
 }

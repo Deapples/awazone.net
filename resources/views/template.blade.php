@@ -13,6 +13,8 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+        <!-- Font Awesome 4 -->
+        <link href="https://fontawesome.com/v4.7.0/icons/" rel="stylesheet">
          <!--Font awesome 5 link-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
         crossorigin="anonymous">

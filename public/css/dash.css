@@ -2,7 +2,78 @@ body {
   font-family: Raleway;
 }
 
-body aside .display {
+body #body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: auto;
+}
+
+body aside {
+  font-family: Raleway;
+  /* Background Gradient for Analagous Colors */
+  /* fallback for old browsers */
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: -webkit-gradient(linear, right top, left top, from(#16bcbb), to(#1d2253));
+  background: linear-gradient(to left, #16bcbb, #1d2253);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  width: 20rem;
+  height: 39rem;
+  color: #ffffff;
+  font-weight: lighter;
+  padding-top: 1rem;
   display: none;
+}
+
+body aside #cancel {
+  font-size: 3rem;
+  margin: 2%;
+  margin-left: 17rem;
+  z-index: 1;
+}
+
+body aside p {
+  margin-left: 3rem;
+}
+
+body aside p a {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+body aside button {
+  background: none;
+  color: #ffffff;
+  border: none;
+  margin: 8rem;
+  margin-right: 1rem;
+  float: right;
+}
+
+body aside #pro i {
+  font-size: 8rem;
+}
+
+body nav {
+  margin-left: 19rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+body main {
+  margin-left: 5rem;
+}
+
+@media (min-width: 750px) {
+  body #cancel {
+    display: none;
+  }
+  body nav {
+    display: none;
+  }
+  body aside {
+    display: block;
+  }
 }
 /*# sourceMappingURL=dash.css.map */

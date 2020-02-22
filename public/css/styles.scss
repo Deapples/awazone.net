@@ -52,7 +52,9 @@ body{
         width: 85%;
         color: $textColor;
     }
-   
+   input:focus{
+       outline: none;
+   }
  }
  @media (min-width:750px){
     form{
@@ -69,6 +71,9 @@ body{
     .field{
         margin-left: 11rem;
         width: 40%;
+        input:focus{
+            outline: none;
+        }
     }
  }
 }

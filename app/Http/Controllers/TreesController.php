@@ -45,19 +45,37 @@ class TreesController extends Controller
           
            
             $children = Pair::where('parent_id', $id)->get();
-            if($children){
+            if(count($children)> 0){
                  $left_child = User::where('id', $children[0]->user_id)->get();
                  $child1 = $left_child[0]->username;
+                    //find $child1 children
+
+                    $childre = Pair::where('parent_id',  $children[0]->user_id)->get();
+                    if (count($childre)> 0){
+                        $left_chil = User::where('id', $childre[0]->user_id)->get();
+                        $child3 = $left_chil[0]->username;
+                    }else if (count($childre)> 1){
+                        $right_chil = User::where('id', $childre[1]->user_id)->get();
+                        $child4 = $right_chil[0]->username; 
+                    }
+
+
+
                  if(count($children) > 1){
                     $right_child = User::where('id', $children[1]->user_id)->get();
-                   
-                    if ($right_child){
                         $child2 = $right_child[0]->username;
-                    }else{
-                        $child2 = "Not Filled";
-                    }
+                        $childr = Pair::where('parent_id',  $children[1]->user_id)->get();
+                        if (count($childr)> 0){
+                            $lft_chil = User::where('id', $childr[0]->user_id)->get();
+                            $child5 = $lft_chil[0]->username;
+                        }else if (count($childr)> 1){
+                            $rght_chil = User::where('id', $childr[1]->user_id)->get();
+                            $child6 = $rght_chil[0]->username; 
+                        }
                  }else{
                     $child2 = "Not Filled";
+                    $child5 = "Not Filled";
+                    $child6 = "Not Filled";
                 }
             }else{
                 $child1 = "Not Filled";

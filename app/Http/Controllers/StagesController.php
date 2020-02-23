@@ -30,7 +30,12 @@ class StagesController extends Controller
             if((count($parent)) > 0){*/
 
             $count = StageTwo::where('parent_id', $parent->id)->get();
-            $root_id = $count->parent_id;
+                    if(count($count)< 1){
+                        $root_id = 0;
+                    }else{
+                        $root_id = $count->parent_id;
+                    }
+                    
 
             //if less than 1 set position to be left
             if((count($count)< 1 ) ){
@@ -115,7 +120,12 @@ class StagesController extends Controller
               if((count($parent)) > 0){*/
   
               $count = StageThree::where('parent_id', $parent->id)->get();
-              $root_id = $count->parent_id;
+                    if(count($count)< 1){
+                        $root_id = 0;
+                    }else{
+                        $root_id = $count->parent_id;
+                    }
+             
   
               //if less than 1 set position to be left
               if((count($count)< 1 ) ){
@@ -123,7 +133,7 @@ class StagesController extends Controller
   
                   $position = 'left';
   
-                  //insert into stageTwo table
+                  //insert into stageThree table
   
                   $pair = new StageThree();
                   $pair->user_id = $check->id;
@@ -200,7 +210,11 @@ class StagesController extends Controller
           if((count($parent)) > 0){*/
 
           $count = StageFour::where('parent_id', $parent->id)->get();
-          $root_id = $count->parent_id;
+                if(count($count)< 1){
+                    $root_id = 0;
+                }else{
+                    $root_id = $count->parent_id;
+                }
 
           //if less than 1 set position to be left
           if((count($count)< 1 ) ){
@@ -208,7 +222,7 @@ class StagesController extends Controller
 
               $position = 'left';
 
-              //insert into stageTwo table
+              //insert into stageFour table
 
               $pair = new StageFour();
               $pair->user_id = $check->id;
@@ -283,11 +297,14 @@ public function stageFive(){
   //count where the user_id appears as parent Id
   foreach($checkStage as $check){
 
-      /*$parent = StageTwo::where('parent_id', $parent->id)->where('level', '<', 2)->get()->first();
-      if((count($parent)) > 0){*/
 
       $count = StageFive::where('parent_id', $parent->id)->get();
-      $root_id = $count->parent_id;
+            if(count($count)< 1){
+                $root_id = 0;
+            }else{
+                $root_id = $count->parent_id;
+            }
+      
 
       //if less than 1 set position to be left
       if((count($count)< 1 ) ){
@@ -295,7 +312,7 @@ public function stageFive(){
 
           $position = 'left';
 
-          //insert into stageTwo table
+          //insert into stageFive table
 
           $pair = new StageFive();
           $pair->user_id = $check->id;

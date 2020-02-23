@@ -13,6 +13,17 @@
         </nav>
         <main>
             <p>Welcome, <b>{{$data->username}}</b></p>
+            <div id="balances">
+                <div id="acc">
+                    <p><i class="fa fa-wallet"></i> <strong style="color: #16bcbb"> Account Balance: </strong> $ {{number_format(($data->balance)/400, 2)}}</p>
+                </div>
+                <div id="acc">
+                    <p><i class="fa fa-wallet"></i> <strong style="color: #16bcbb"> Referral Bonus: </strong> $ {{number_format(($data->referral_bonus)/400, 2)}}</p>
+                </div>
+                <div id="acc">
+                    <p><i class="fa fa-wallet"></i> <strong style="color: #16bcbb"> Potential Earning: </strong> $ {{number_format(($data->balance)/400, 2)}}</p>
+                </div>
+            </div>
         </main>
     </div>
 </div>

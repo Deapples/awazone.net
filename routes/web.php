@@ -48,3 +48,6 @@ Route::get('/pair2', 'StagesController@stageFive');
 //get tree
 
 Route::get('/tree', 'TreesController@getTree');
+
+//upgrade route
+Route::get('/upgrade', 'UgradesController@showUpgrade');

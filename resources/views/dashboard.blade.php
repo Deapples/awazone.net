@@ -24,6 +24,11 @@
                     <p><i class="fa fa-wallet"></i> <strong style="color: #16bcbb"> Potential Earning: </strong> $ {{number_format(($data->balance)/400, 2)}}</p>
                 </div>
             </div>
+            <div id="upgrade">
+                <div id="con">
+                    <p> <a href="/upgrade">UPGRADE PACKAGE</a></p>
+                </div>
+            </div>
         </main>
     </div>
 </div>

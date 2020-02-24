@@ -18,7 +18,7 @@ body{
         height: 39rem;
         color: $white;
         font-weight: lighter;
-        padding-top: 1rem;
+        padding-top: 2rem;
         display: none;
         #cancel{
             font-size: 3rem;
@@ -55,6 +55,35 @@ body{
     }
     main{
         margin-left: 5rem;
+        #balances{
+            display: block;
+          }
+         #acc{
+           box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+           height: 150px;
+           width: auto;
+           text-align: center;
+           margin-bottom: 2rem;
+           margin-left: 1rem;
+           p{
+               padding-top: 2rem ;
+               margin: 2rem;
+           }
+         }
+
+        #upgrade{
+            background: $nd-color;
+            color: $white;
+            #con{
+                text-align: center;
+                height: 3rem;
+                padding-top: 0.4rem;
+                p a{
+                    text-decoration: none;
+                    color: $white;
+                }
+            }
+        }
     }
     @media (min-width: 750px){
         //do not display navbar in bigger screens
@@ -67,6 +96,11 @@ body{
         }
         aside{
             display:block;
+        }
+       main{ 
+           #balances{
+            display: flex;
+          }
         }
     }
 }

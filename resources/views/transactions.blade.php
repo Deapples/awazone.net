@@ -6,8 +6,8 @@
 <link rel="stylesheet" href="{{URL::asset('css/dash.css') }}" >
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
 <style>
-    main{
-        margin: 0rem;
+    #table{
+        margin: 2rem;
     }
 </style>
 <div id="body">
@@ -18,24 +18,32 @@
             
         </nav>
         <main>
-            <div style="overflow-x:auto;">
+            <div id="table" style="overflow-x:auto;">
 <div style = "overflow-y:auto">
+@if (!($transactions))
+    {{'NO HISTORY YET'}}
 
+@else
 <table class="w3-table-all w3-hoverable">
     <thead>
       <tr style="background-color: #1d2253" class="w3-text-white w3-small">
-      <th>NAME</th>
-        <th>PLAN</th>
-        <th>AMOUNT INVESTED</th>
-        <th>PROFIT</th>
-        <th>TOTAL EXPECTED RETURN</th>
-        <th>DATE INVESTED</th>
-        <th>EXPECTED DATE OF RETURN</th>
-        <th>STATUS </th>
+      <th>ID</th>
+        <th>AMOUNT</th>
+        <th>DESCRIPTION</th>
+        <th>DATE</th>
       </tr>
-          
-              <tr class='w3-hover-light-blue' ><td>Ezekiel</td><td>Print market</td><td> &#8358;5,000,000</td><td> &#8358;3,000,000</td><td> &#8358;8,000,000</td><td>2020-01-18 13:23:04</td><td>2021-01-18 10:49:36</td><td>running</td></tr>    </thead>
+      </thead>
+          @foreach ($transactions as $transaction){
+            <tr class='w3-hover-light-blue' >
+                <td>{{$transaction->id}}</td>
+                <td>${{number_format($transaction->amount)}}</td>
+                <td> {{$transaction->description}}</td>
+                <td> {{$transaction->created_at}}</td>
+          </tr>   
     
+          }
+          @endforeach    
+        @endif
     </div>
     </div>
           

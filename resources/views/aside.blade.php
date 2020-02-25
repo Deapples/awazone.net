@@ -2,7 +2,7 @@
         <aside>
         <p id="cancel"> &times; </p>
             <p id="pro"><i class="fa fa-user-circle"></i></p>
-            <p>Stage: {{$data->stage}}</p>
+            <p>{{$data->Package}} Stage: {{$data->stage}}</p>
             <p><a href="/dashboard"><i class="fa fa-home"></i> DASHBOARD</a></p>
             <p><a href="/profile"><i class="fa fa-user"></i> PROFILE</a></p>
             <p><a href="/tree"><i class="fa fa-sitemap"></i> GENEAOLOGY</a></p>

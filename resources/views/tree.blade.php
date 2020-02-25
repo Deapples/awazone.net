@@ -20,7 +20,7 @@ margin-right: 18rem;
     margin-left: 26rem;
     width: 1.4rem;
     margin-bottom: 1rem;
-    position: fixed;
+    position: absolute;
     bottom: 29rem;
 }
 #childhr{
@@ -35,7 +35,7 @@ margin-right: 18rem;
     transform: rotate(90deg);
     width: 1.2rem;
     margin-left: 7rem;
-    position: fixed;
+    position: absolute;
     bottom: 26.5rem;
 }
 #me, #myparent{
@@ -128,7 +128,7 @@ html, body {
                     <line x1="199" y1="0" x2="200" y2="200" style="stroke:rgb(255,0,0);stroke-width:2" />
                 </svg><hr /> <hr id="left" /> <hr id="right" />
                         <div id="children" style="display: flex">
-                            <div id="child1"><b>{{$child1}} </b> 
+                            <div id="child1"><b> {{$child1}} </b> 
                                     <hr id="childhr" />
                                     <hr id="childhrleft" />
                                     <hr id="childhrright" />

@@ -51,3 +51,5 @@ Route::get('/tree', 'TreesController@getTree');
 
 //upgrade route
 Route::get('/upgrade', 'UgradesController@showUpgrade');
+
+Route::get('/profile', 'ProfilesController@showProfile');

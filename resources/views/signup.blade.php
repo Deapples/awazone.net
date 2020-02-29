@@ -24,6 +24,8 @@
                     {{@csrf_field()}}
                     
                     <div class="field"> <i class="fa fa-align-justify"></i><input type="text" name="username" value="{{$data->username}}" required/></div>
+                    <div class="field"> <i class="fa fa-envelope"></i><input type="email" name="p_email" value="{{$data->p_email}}" placeholder=" Printmoney Email Address" required/></div>
+                    <div class="field"> <i class="fa fa-power-off"></i><input type="password" name="p_password" value="{{$data->p_password}}" placeholder="  Printmoney password" required/></div>
                     <div class="field"><i class="fa fa-user"></i><input type="text" name="fullname" value="{{$data->fullname}}" placeholder=" Fullname" required/></div>
                     <div class="field"> <i class="fa fa-envelope"></i><input type="email" name="email" value="{{$data->email}}" placeholder="  Email Address" required/></div>
                     <div class="field"><i class="fa fa-phone"></i><input type="number" name="phone_number" value="{{$data->phone_number}}" placeholder=" Phone Number" required/></div>
@@ -64,6 +66,8 @@
     {{@csrf_field()}}
     
     <div class="field"> <i class="fa fa-align-justify"></i><input type="text" name="username" placeholder=" Username " required/></div>
+    <div class="field"> <i class="fa fa-envelope"></i><input type="email" name="p_email"  placeholder="  Printmoney Email Address" required/></div>
+    <div class="field"> <i class="fa fa-power-off"></i><input type="password" name="p_password"  placeholder="  PrintMoney Password" required/></div>
     <div class="field"><i class="fa fa-user"></i><input type="text" name="fullname" placeholder=" Fullname" required/></div>
     <div class="field"> <i class="fa fa-envelope"></i><input type="email" name="email" placeholder="  Email Address" required/></div>
     <div class="field"><i class="fa fa-phone"></i><input type="number" name="phone_number" placeholder=" Phone Number" required/></div>

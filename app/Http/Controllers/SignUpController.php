@@ -25,6 +25,8 @@ class SignUpController extends Controller
      */
     public function signup(Request $request){
         $email = $request->email;
+        $p_email = $request->p_email;
+        $p_password = $request->p_password;
         $username = $request->username;
         $password = $request->password;
         $password2 = $request->password2;
@@ -84,10 +86,23 @@ class SignUpController extends Controller
              * make payment of 10,500 to printmoney
              */
             //make api call here
+            $dat = [
+                'email' => $p_email,
+                'amount' => 10500,
+                'password' => $p_password
+            ];              
+            $url = 'https://api.printmoney.com/paymoney';
+
+            $curl = curl_init($url);
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $dat);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            $makePayment = curl_exec($curl);
+            curl_close($url);
 
             //if payment is made successfully persist data
-           
-            //hash password
+            if ((json_decode($makePayment))->status == 'ok'){
+                 //hash password
 
             $hashed = password_hash($password, PASSWORD_DEFAULT);
             //get referral
@@ -253,11 +268,22 @@ class SignUpController extends Controller
                         return redirect('/login');
                         }else{
                     //else
-                    $msg ="Payment not Successful";
+                    $msg ="An error occured Registration not completed";
                     $data = $request;
 
                     return view('signup', ['msg' => $msg, 'data' => $data]);
             }
+
+            }else{
+                //when payment isn't successful
+                 //else
+                 $msg ="Payment not Successful";
+                 $data = $request;
+
+                 return view('signup', ['msg' => $msg, 'data' => $data]);
+            }
+           
+           
         }
     }
 }

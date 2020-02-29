@@ -9,6 +9,11 @@
     #table{
         margin: 2rem;
     }
+    @media (max-width:600px){
+        #table{
+            margin-left: -2rem;
+        }
+    }
 </style>
 <div id="body">
     @include('aside')

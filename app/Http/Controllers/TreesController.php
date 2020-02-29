@@ -18,6 +18,7 @@ class TreesController extends Controller
         if((session('id')== null)){
             return redirect('/login');
         }else{
+            
             //initialize all children 
             $child1 = "Not Filled";
                 $child3 = "Not Filled";

@@ -85,6 +85,11 @@ body{
             }
         }
     }
+    @media (max-width: 600px){
+        main #balances{
+            margin-left: -2rem ;
+        }
+    }
     @media (min-width: 750px){
         //do not display navbar in bigger screens
         #cancel{

@@ -87,21 +87,22 @@ class SignUpController extends Controller
              */
             //make api call here
             $dat = [
-                'email' => $p_email,
+                'p_email' => $p_email,
                 'amount' => 10500,
-                'password' => $p_password
+                'p_password' => $p_password
             ];              
-            $url = 'https://api.printmoney.com/paymoney';
+            $url = 'http://api.printmoney.com/paymoney';
 
             $curl = curl_init($url);
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $dat);
                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             $makePayment = curl_exec($curl);
-            curl_close($url);
+            
+            $payment = json_decode($makePayment);
 
             //if payment is made successfully persist data
-            if ((json_decode($makePayment))->status == 'ok'){
+            if ($payment->status == 'ok'){
                  //hash password
 
             $hashed = password_hash($password, PASSWORD_DEFAULT);

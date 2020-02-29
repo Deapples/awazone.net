@@ -17,7 +17,7 @@
                 {{@csrf_field()}}
                 <input type="email" name="p_email" placeholder=" Enter your printmoney email" required /><br />
                 <input type="password" name="p_password" placeholder=" Enter your printmoney password" required/> <br />
-                <input type="number" name="amount" placeholder=" Enter Amount to withdraw" required/> <br />
+                <input type="number" name="amount" placeholder=" Enter Amount to withdraw in $" required/> <br />
                 <button type="submit">Withdraw Fund</button>
             </form>
           

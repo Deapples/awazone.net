@@ -57,3 +57,5 @@ Route::get('/profile', 'ProfilesController@showProfile');
 Route::get('/transactions', 'TransactionsController@showTransactions');
 
 Route::get('/withdraw', 'withdrawEarningsController@showWithdraw');
+
+Route::get('/withdraw', 'withdrawEarningsController@withdrawFunds');

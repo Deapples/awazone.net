@@ -43,6 +43,7 @@ class withdrawEarningsController extends Controller
         $check_balance = User::where('id', $id)->get();
 
         if(count($check_balance)> 0){
+            $rem = ($check_balance[0]->balance) - ($amount/350);
             if(($check_balance[0]->balance) >= ($amount/350)){
                  //make api call
                 //make api call here
@@ -71,6 +72,8 @@ class withdrawEarningsController extends Controller
                     $input = $trans->save();
         
                     if($input){
+                        //update database
+                        User::where('id', $id)->update(['balance' => $rem]);
                         echo "<script>alert('Payment Successfully made into your printmoney Account'); window.location=('/withdraw');</script>";
                     }else{
                         echo "<script>alert('An error occur kindly contact customer care'); window.location=('/withdraw');</script>";

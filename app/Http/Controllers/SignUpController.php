@@ -279,9 +279,10 @@ class SignUpController extends Controller
                 //when payment isn't successful
                  //else
                  $msg ="Payment not Successful";
+                 $error = $payment->message;
                  $data = $request;
 
-                 return view('signup', ['msg' => $msg, 'data' => $data]);
+                 return view('signup', ['msg' => $msg, 'data' => $data, 'error'=> $error]);
             }
            
            

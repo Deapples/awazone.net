@@ -1,10 +1,9 @@
 @extends('template')
 
-@section('title', 'Withdraw :: Awazone')
+@section('title', 'Incentives :: Awazone')
 
 @section('content')
 <link rel="stylesheet" href="{{URL::asset('css/dash.css') }}" >
-<link rel="stylesheet" href="{{URL::asset('css/withdraw.css') }}" >
 <div id="body">
     @include('aside')
     <div id="real">
@@ -13,14 +12,8 @@
             
         </nav>
         <main>
-            <form method="POST" action="/withdrawal"> 
-            <p style="text-align: center; color:blueviolet"> BALANCE: ${{number_format(($data->balance)/400, 2)}}</p>
-                {{@csrf_field()}}
-                <input type="email" name="p_email" placeholder=" Enter your printmoney email" required /><br />
-                <input type="password" name="p_password" placeholder=" Enter your printmoney password" required/> <br />
-                <input type="number" name="amount" placeholder=" Enter Amount to withdraw in $" required/> <br />
-                <button type="submit">Withdraw Fund</button>
-            </form>
+            <p>Welcome, <b>{{$data->username}}</b></p>
+            Here is where you get the full incentives packages
           
         </main>
     </div>

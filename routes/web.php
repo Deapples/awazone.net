@@ -58,4 +58,6 @@ Route::get('/transactions', 'TransactionsController@showTransactions');
 
 Route::get('/withdraw', 'withdrawEarningsController@showWithdraw');
 
-Route::get('/withdraw', 'withdrawEarningsController@withdrawFunds');
+Route::post('/withdrawal', 'withdrawEarningsController@withdrawFunds');
+
+Route::get('/incentives', 'IncentivesController@showIncentive');

@@ -1,0 +1,25 @@
+@import 'variables';
+
+form{
+    input{
+        width: 34rem;
+        margin: 1rem;
+        height: 2rem;
+        font-size: 1.5rem;
+    }
+    select{
+        margin: 1rem;
+        width: 15rem;
+        font-size: x-large;
+    }
+    button{
+        margin: 1rem;
+        border-radius: 1rem;
+        border: none;
+        color: $white;
+        background: $awa-color;
+        height: 2rem;
+        text-align: center;
+        width: 12rem;
+    }
+}

@@ -4,6 +4,8 @@
 
 @section('content')
 <link rel="stylesheet" href="{{URL::asset('css/dash.css') }}" >
+<link rel="stylesheet" href="{{URL::asset('css/upgrade.css') }}" >
+
 <div id="body">
     @include('aside')
     <div id="real">
@@ -13,6 +15,15 @@
         </nav>
         <main>
             <p>Welcome, <b>{{$data->username}}</b></p>
+
+            <form method="POST">
+                <input type="text" placeholder="Enter Your referral username" /><br />
+               <select required>
+                   <option value="etm">ETM </option>
+               </select><br />
+               <button type="submit" disabled>UPGRADE PACKAGE</button>
+            </form>
+
           
         </main>
     </div>

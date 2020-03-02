@@ -100,8 +100,9 @@ class SignUpController extends Controller
             $makePayment = curl_exec($curl);
             
             $payment = json_decode($makePayment);
-
+           
             //if payment is made successfully persist data
+            if($payment){
             if ($payment->status == 'ok'){
                  //hash password
 
@@ -286,6 +287,12 @@ class SignUpController extends Controller
             }
            
            
+        }else{
+            $msg ="Payment not Successful";
+            $data = $request;
+
+            return view('signup', ['msg' => $msg, 'data' => $data]);
         }
+    }
     }
 }

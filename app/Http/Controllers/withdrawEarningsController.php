@@ -82,7 +82,7 @@ class withdrawEarningsController extends Controller
         
                    
                 }else{
-                    echo "<script>alert('Payment  cannot be made at the moment'); window.location=('/withdraw');</script>";
+                    echo "<script>alert('Payment  cannot be made at the moment error: $payment->message'); window.location=('/withdraw');</script>";
         
                 }
         

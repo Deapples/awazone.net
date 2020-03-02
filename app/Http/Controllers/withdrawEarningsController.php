@@ -61,44 +61,48 @@ class withdrawEarningsController extends Controller
                 $makePayment = curl_exec($curl);
                 
                 $payment = json_decode($makePayment);
-        
-                if( $payment->status == 'ok'){
-                    //enter transaction history here
-                   
-                    $trans = new Transaction();
-                    $trans->user_id = $id;
-                    $trans->description = $amount . "Withdrawal into printmoney";
-                    $trans->amount = $amount;
-                    $input = $trans->save();
-        
-                    if($input){
-                        //update database
-                        User::where('id', $id)->update(['balance' => $rem]);
-                        echo "<script>alert('Payment Successfully made into your printmoney Account'); window.location=('/withdraw');</script>";
-                    }else{
-                        echo "<script>alert('An error occur kindly contact customer care'); window.location=('/withdraw');</script>";
-                    }
-        
-        
-                   
-                }else{
-                    echo "<script>alert('Payment  cannot be made at the moment error: $payment->message'); window.location=('/withdraw');</script>";
-        
-                }
-        
-
-            }else{
-                //insufficient fund
-                echo "<script>alert('Insufficient Fund'); window.location=('/withdraw');</script>";
-            }
+                
+                if($payment){
+                    if( $payment->status == 'ok'){
+                        //enter transaction history here
+                    
+                        $trans = new Transaction();
+                        $trans->user_id = $id;
+                        $trans->description = $amount . "Withdrawal into printmoney";
+                        $trans->amount = $amount;
+                        $input = $trans->save();
             
-        }else{
-            //not a user
-            echo "<script>alert('Invalid User'); window.location=('/withdraw');</script>";
-        }
+                        if($input){
+                            //update database
+                            User::where('id', $id)->update(['balance' => $rem]);
+                            echo "<script>alert('Payment Successfully made into your printmoney Account'); window.location=('/withdraw');</script>";
+                        }else{
+                            echo "<script>alert('An error occur kindly contact customer care'); window.location=('/withdraw');</script>";
+                        }
+            
+            
+                    
+                    }else{
+                        echo "<script>alert('Payment  cannot be made at the moment error: $payment->message'); window.location=('/withdraw');</script>";
+            
+                    }
+            
+
+                }else{
+                    //insufficient fund
+                    echo "<script>alert('Insufficient Fund'); window.location=('/withdraw');</script>";
+                }
+                
+            }else{
+                //not a user
+                echo "<script>alert('Invalid User'); window.location=('/withdraw');</script>";
+            }
+        
+        
+        
        
-     
-       
-       
+    }else{
+        echo "<script>alert('Operation not successful '); window.location=('/withdraw');</script>";
     }
+}
 }

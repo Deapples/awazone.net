@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Pair;
+use App\Transaction;
 use App\User;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Auth\User as AuthUser;
@@ -253,7 +254,12 @@ class SignUpController extends Controller
 
 
                     }
-                        
+                        //insert into transaction history
+                        $trans = new Transaction();
+                        $trans->user_id = $user_id;
+                        $trans->description = '$'. (10500/400) . ", AIBO payment into printmoney";
+                        $trans->amount = '$'. (10500/400) ;
+                        $trans->save();
 
                         $pair = new Pair();
                         $pair->user_id = $user_id;

@@ -23,28 +23,34 @@ margin-right: 18rem;
     position: absolute;
     bottom: 29rem;
 }
-#childhr{
-    width: 6rem;
-}
-#childhrleft{
-    transform: rotate(90deg);
-    width: 1.2rem;
-    margin-left: 1rem;
-}
-#childhrright{
-    transform: rotate(90deg);
-    width: 1.2rem;
-    margin-left: 7rem;
-    position: absolute;
-    bottom: 26.5rem;
-}
+
+
 #me, #myparent{
     margin-left: 12rem;
+}
+#upimg{
+    margin-left: 2rem;
+}
+@media (min-width: 750px){
+    #leftimg{
+    margin: 1rem;
+    margin-left: 0rem;
+}
+    #child2{
+        margin-left: 13rem;
+    }
 }
 @media (max-width: 600px){
     body{
         margin: 0;
         overflow: scroll;
+    }
+    #upimg{
+    margin-left: 1rem;
+    width: 14rem;
+}
+    #child6{
+        margin-left:2rem;
     }
     main{
         margin: 0;
@@ -65,7 +71,7 @@ svg{
 }
 #child2{
    position: absolute;
-   left: 10rem;
+   left: 12rem;
 }
 #child4{
     margin-right:0;
@@ -106,6 +112,9 @@ html, body {
     overflow: hidden;
     
 }
+#leftimg, #rightimg{
+    width: 6rem;
+}
 }
 </style>
 <div id="body">
@@ -126,13 +135,13 @@ html, body {
                 <p  id="me"> <b>Me </b></p>
                 <svg height="20" width="500">
                     <line x1="199" y1="0" x2="200" y2="200" style="stroke:rgb(255,0,0);stroke-width:2" />
-                </svg><hr /> <hr id="left" /> <hr id="right" />
+                </svg><br />
+                <img id="upimg" src="https://res.cloudinary.com/ezeko/image/upload/v1583145609/images/tree_line_yji3gi.png" />
                         <div id="children" style="display: flex">
-                            <div id="child1"><b> {{$child1}} </b> 
-                                    <hr id="childhr" />
-                                    <hr id="childhrleft" />
-                                    <hr id="childhrright" />
-
+                            <div id="child1"><b> {{$child1}} </b> <br />
+                                  
+                                   <img id="leftimg" src="https://res.cloudinary.com/ezeko/image/upload/v1583145590/images/tree_line_2_xmz5qw.png" />
+                                       
 
                                 <div id="children" style="display: flex; "> <p id="child3" style=" margin: 1rem; margin-left:0;"><b> {{$child3}}</b></p>
                                     <p id="child4" style="margin-right:1rem;"><b>  {{$child4}}</b></p>
@@ -140,11 +149,10 @@ html, body {
                             </div>
 
 
-                            <div id="child2" style="margin-left: 0rem"><b>  {{$child_2}}</b>
-
-                            <hr id="childhr" />
-                                    <hr id="childhrleft" />
-                                    <hr id="childhrright" />
+                            <div id="child2" ><b>  {{$child_2}}</b>
+                            <br />
+                             <img id="rightimg" src="https://res.cloudinary.com/ezeko/image/upload/v1583145590/images/tree_line_2_xmz5qw.png" />
+                                <br />
                                 <div id="children" style="display: flex;"> <p id="child5" style=" margin: 1rem; margin-left:0;"><b> {{$child5}}</b></p>
                                         <p id="child6"><b> {{$child6}}</b></p>
                                 </div>

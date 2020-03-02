@@ -1,0 +1,112 @@
+
+hr { 
+        width: 25rem;
+margin-left: 1.66rem;
+margin-right: 18rem;
+}
+#left{
+    transform: rotate(90deg);
+    margin-left: 1rem;
+    width: 1.4rem;
+}
+#right{
+    transform: rotate(90deg);
+    margin-left: 26rem;
+    width: 1.4rem;
+    margin-bottom: 1rem;
+    position: absolute;
+    bottom: 29rem;
+}
+
+
+#me, #myparent{
+    margin-left: 12rem;
+}
+#upimg{
+    margin-left: 2rem;
+}
+@media (min-width: 750px){
+    #leftimg{
+    margin: 1rem;
+    margin-left: 0rem;
+}
+    #child2{
+        margin-left: 13rem;
+    }
+}
+@media (max-width: 600px){
+    body{
+        margin: 0;
+        overflow: scroll;
+    }
+    #upimg{
+    margin-left: 1rem;
+    width: 14rem;
+}
+    #child6{
+        margin-left:2rem;
+    }
+    main{
+        margin: 0;
+        width: 50%;
+        font-size:12px;
+        overflow: scroll;
+    }
+    hr { 
+        width: 12rem;
+margin-left: 1.66rem;
+margin-right: 18rem;
+}
+#me, #myparent{
+    margin-left: 7rem;
+}
+svg{
+    margin-left: -5rem;
+}
+#child2{
+   position: absolute;
+   left: 12rem;
+}
+#child4{
+    margin-right:0;
+}
+#trees{
+    position: absolute;
+    left: 1rem;
+    width:40%;
+    
+}
+#childhrleft{
+    width: 1.0rem;
+}
+#childhrright{
+   margin-left: 7rem;
+    top: 15.3rem;
+}
+#left{
+     width: 1.1rem;
+}
+#right{
+    margin-left: 13rem;
+   
+    top: 13rem;
+   
+}
+nav{
+    margin: 0;
+    margin-top: 1rem;
+    float: left;
+}
+html, body {
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    overflow: hidden;
+    
+}
+#leftimg, #rightimg{
+    width: 6rem;
+}
+}

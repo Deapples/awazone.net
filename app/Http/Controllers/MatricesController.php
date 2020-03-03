@@ -45,3 +45,43 @@ class MatricesController extends Controller
    
     }
 }
+
+/**
+ *   
+ *  // auto pair
+ * 
+                    $n_parent = ETM::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                    //check position
+                   if(count($n_parent)>0) {
+                        if($n_parent[0]->position == 'left'){
+                        $position = 'right';
+                        $level = 1;
+
+                    }else{
+                        $position = 'left';
+                        $level = 2;
+                    }
+                     //enter without parent and root
+                     $save = new ETM();
+                     $save->user_id = $id;
+                     $save->status = 'uncleared';
+                     $save->parent_id = $n_parent[0]->user_id;
+                     $save->root_id= $n_parent[0]->parent_id;
+                     $save->stage = 1;
+                     $save->level = $level;
+                     $save->position = $position;
+
+                }else{
+                    //enter without parent and root
+                    $save = new ETM();
+                    $save->user_id = $id;
+                    $save->status = 'uncleared';
+                    $save->parent_id = 0;
+                    $save->root_id= 0;
+                    $save->stage = 1;
+                    $save->level = $level;
+                    $save->position = $position;
+                }
+                    
+                }
+ */

@@ -41,16 +41,18 @@ class SignUpController extends Controller
                             ->get();
         $check_phone = User::where('phone_number', $phone_number)
         ->get();
-        
-       /* //if captcha not checked then reject 
-        if($captcha !== 'checked'){
+         $d = 'g-recaptcha-response';
+        $cap = $request->$d;
+    
+        //if captcha not checked then reject 
+        if(!$cap){
             $msg ="Captcha must be used";
             //$data = new AuthUser();
             $referral = $request->referral;
             $data = $request;
 
             return view('signup', ['msg' => $msg, 'data' => $data, 'referral' => $referral]);
-        }*/
+        }
 
         //check passwords
         if($password !== $password2){

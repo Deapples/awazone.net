@@ -18,10 +18,12 @@
 
             <form method="POST">
                 <input type="text" placeholder="Enter Your referral username" /><br />
-               <select required>
-                   <option value="etm">ETM </option>
-               </select><br />
-               <button type="submit" disabled>UPGRADE PACKAGE</button>
+                @if ($data->Package !== 'AIBO')
+                    <select name='package' required>
+                        <option value="ETM">ETM </option>
+                    </select><br />
+                    <button type="submit" disabled>UPGRADE PACKAGE</button>
+                @endif
             </form>
 
           

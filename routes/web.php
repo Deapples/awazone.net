@@ -61,3 +61,5 @@ Route::get('/withdraw', 'withdrawEarningsController@showWithdraw');
 Route::post('/withdrawal', 'withdrawEarningsController@withdrawFunds');
 
 Route::get('/incentives', 'IncentivesController@showIncentive');
+
+Route::post('/package', 'UgradesController@createPackage');

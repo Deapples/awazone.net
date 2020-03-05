@@ -9,7 +9,7 @@ class IncentivesController extends Controller
 {
     //
     public function showIncentive(){
-        if((session('id')== null)){
+        if((session('id') == null)){
             return redirect('/login');
         }else{
             $id = session('id');
@@ -20,4 +20,7 @@ class IncentivesController extends Controller
 
         }
     }
+
+   
+    
 }

@@ -41,1359 +41,1571 @@ class UgradesController extends Controller
         $parent = $request->refer;
         $price = 0;
         $package = $request->package;
+        $p_email = $request->p_email;
+        $p_password = $request->p_password;
 
         if ($package == 'ETM'){
-            //check if parent is in the package currently
-            $check = User::where('username', $parent)->get();
-            if(count($check)> 0){
-                if($check[0]->Package == 'ETM'){
-                   //check stage
-                   $che = ETM::where('user_id', $check[0]->id)->where('stage', 1)->get();
-                   //if parent is the package
-                   if(count($che)> 0){
-                       //now check position where user is parent
-                       $checkPos = ETM::where('parent_id', $check[0]->id)->get();
-                       if (count($checkPos) > 0){
-                           //enter details
-                           $save = new ETM();
-                           $save->user_id = $id;
-                           $save->status = 'uncleared';
-                           $save->parent_id = $check[0]->id;
-                           $save->root_id= $che[0]->parent_id;
-                           $save->stage = 1;
-                           $save->level = 2;
-                           $save->position = 'right';
-                           $save->save();
-
-                           //add into transaction history
-                           $newTransaction = new Transaction();
-                           $newTransaction->user_id = $id;
-                           $newTransaction->description = "ETM upgrade";
-                           $newTransaction->amount = 100;
-                           $newTransaction->save();
-                           //update package
-                           User::where('id', $id)->update(['Package'=> 'ETM']);
-      
-
-                       }else if(count($check)> 1){
-                           //auto pair
-                              // auto pair
-                    $n_parent = ETM::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                    //check position
-                   if(count($n_parent)>0) {
-                        if($n_parent[0]->position == 'left'){
-                        $position = 'right';
-                        $level = 1;
-
-                    }else{
-                        $position = 'left';
-                        $level = 2;
-                    }
-                     //enter without parent and root
-                     $save = new ETM();
-                     $save->user_id = $id;
-                     $save->status = 'uncleared';
-                     $save->parent_id = $n_parent[0]->user_id;
-                     $save->root_id= $n_parent[0]->parent_id;
-                     $save->stage = 1;
-                     $save->level = $level;
-                     $save->position = $position;
-
-                       //add into transaction history
-                       $newTransaction = new Transaction();
-                       $newTransaction->user_id = $id;
-                       $newTransaction->description = "ETM upgrade";
-                       $newTransaction->amount = 100;
-                       $newTransaction->save();
-                       //update package
-                       User::where('id', $id)->update(['Package'=> 'ETM']);
-
-                }else{
-                    //enter without parent and root
-                    $save = new ETM();
-                    $save->user_id = $id;
-                    $save->status = 'uncleared';
-                    $save->parent_id = 0;
-                    $save->root_id= 0;
-                    $save->stage = 1;
-                    $save->level = $level;
-                    $save->position = $position;
-
-                      //add into transaction history
-                      $newTransaction = new Transaction();
-                      $newTransaction->user_id = $id;
-                      $newTransaction->description = "ETM upgrade";
-                      $newTransaction->amount = 100;
-                      $newTransaction->save();
-                      //update package
-                      User::where('id', $id)->update(['Package'=> 'ETM']);
-                }
-                    
+                //make api call here
+                $dat = [
+                    'p_email' => $p_email,
+                    'amount' => 40000,
+                    'p_password' => $p_password
+                ];              
+                $url = 'https://api.printmoneyng.com/paymoney';
+    
+                $curl = curl_init($url);
+                    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $dat);
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                $makePayment = curl_exec($curl);
                 
-                         
+                $payment = json_decode($makePayment);
+                
+                if($payment){
+                    if($payment->status == 'ok'){
 
-                       }else{
-                        $save = new ETM();
-                        $save->user_id = $id;
-                        $save->status = 'uncleared';
-                        $save->parent_id = $check[0]->id;
-                        $save->root_id= $che[0]->parent_id;
-                        $save->stage = 1;
-                        $save->level = 1;
-                        $save->position = 'left';
+                                    //check if parent is in the package currently
+                        $check = User::where('username', $parent)->get();
+                        if(count($check)> 0){
+                            if($check[0]->Package == 'ETM'){
+                            //check stage
+                            $che = ETM::where('user_id', $check[0]->id)->where('stage', 1)->get();
+                            //if parent is the package
+                            if(count($che)> 0){
+                                //now check position where user is parent
+                                $checkPos = ETM::where('parent_id', $check[0]->id)->get();
+                                if (count($checkPos) > 0){
+                                    //enter details
+                                    $save = new ETM();
+                                    $save->user_id = $id;
+                                    $save->status = 'uncleared';
+                                    $save->parent_id = $check[0]->id;
+                                    $save->root_id= $che[0]->parent_id;
+                                    $save->stage = 1;
+                                    $save->level = 2;
+                                    $save->position = 'right';
+                                    $save->save();
 
-                          //add into transaction history
-                          $newTransaction = new Transaction();
-                          $newTransaction->user_id = $id;
-                          $newTransaction->description = "ETM upgrade";
-                          $newTransaction->amount = 100;
-                          $newTransaction->save();
-                          //update package
-                          User::where('id', $id)->update(['Package'=> 'ETM']);
-                       }
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "ETM upgrade";
+                                    $newTransaction->amount = 100;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'ETM']);
+                
 
-                   }else{
-                       //auto pair
-                          // auto pair
-                    $n_parent = ETM::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                    //check position
-                   if(count($n_parent)>0) {
-                        if($n_parent[0]->position == 'left'){
-                        $position = 'right';
-                        $level = 1;
+                                }else if(count($check)> 1){
+                                    //auto pair
+                                        // auto pair
+                                $n_parent = ETM::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                                //check position
+                            if(count($n_parent)>0) {
+                                    if($n_parent[0]->position == 'left'){
+                                    $position = 'right';
+                                    $level = 1;
 
-                    }else{
-                        $position = 'left';
-                        $level = 2;
-                    }
-                     //enter without parent and root
-                     $save = new ETM();
-                     $save->user_id = $id;
-                     $save->status = 'uncleared';
-                     $save->parent_id = $n_parent[0]->user_id;
-                     $save->root_id= $n_parent[0]->parent_id;
-                     $save->stage = 1;
-                     $save->level = $level;
-                     $save->position = $position;
+                                }else{
+                                    $position = 'left';
+                                    $level = 2;
+                                }
+                                //enter without parent and root
+                                $save = new ETM();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = $n_parent[0]->user_id;
+                                $save->root_id= $n_parent[0]->parent_id;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
 
-                       //add into transaction history
-                       $newTransaction = new Transaction();
-                       $newTransaction->user_id = $id;
-                       $newTransaction->description = "ETM upgrade";
-                       $newTransaction->amount = 100;
-                       $newTransaction->save();
-                       //update package
-                       User::where('id', $id)->update(['Package'=> 'ETM']);
+                                //add into transaction history
+                                $newTransaction = new Transaction();
+                                $newTransaction->user_id = $id;
+                                $newTransaction->description = "ETM upgrade";
+                                $newTransaction->amount = 100;
+                                $newTransaction->save();
+                                //update package
+                                User::where('id', $id)->update(['Package'=> 'ETM']);
 
-                }else{
-                    //enter without parent and root
-                    $save = new ETM();
-                    $save->user_id = $id;
-                    $save->status = 'uncleared';
-                    $save->parent_id = 0;
-                    $save->root_id= 0;
-                    $save->stage = 1;
-                    $save->level = $level;
-                    $save->position = $position;
+                            }else{
+                                //enter without parent and root
+                                $save = new ETM();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = 0;
+                                $save->root_id= 0;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
 
-                      //add into transaction history
-                      $newTransaction = new Transaction();
-                      $newTransaction->user_id = $id;
-                      $newTransaction->description = "ETM upgrade";
-                      $newTransaction->amount = 100;
-                      $newTransaction->save();
-                      //update package
-                      User::where('id', $id)->update(['Package'=> 'ETM']);
-                }
-                    
-                   }
-                }else{
-                    // auto pair
-                    $n_parent = ETM::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                    //check position
-                   if(count($n_parent)>0) {
-                        if($n_parent[0]->position == 'left'){
-                        $position = 'right';
-                        $level = 1;
+                                //add into transaction history
+                                $newTransaction = new Transaction();
+                                $newTransaction->user_id = $id;
+                                $newTransaction->description = "ETM upgrade";
+                                $newTransaction->amount = 100;
+                                $newTransaction->save();
+                                //update package
+                                User::where('id', $id)->update(['Package'=> 'ETM']);
+                            }
+                                
+                            
+                                    
 
-                    }else{
-                        $position = 'left';
-                        $level = 2;
-                    }
-                     //enter without parent and root
-                     $save = new ETM();
-                     $save->user_id = $id;
-                     $save->status = 'uncleared';
-                     $save->parent_id = $n_parent[0]->user_id;
-                     $save->root_id= $n_parent[0]->parent_id;
-                     $save->stage = 1;
-                     $save->level = $level;
-                     $save->position = $position;
+                                }else{
+                                    $save = new ETM();
+                                    $save->user_id = $id;
+                                    $save->status = 'uncleared';
+                                    $save->parent_id = $check[0]->id;
+                                    $save->root_id= $che[0]->parent_id;
+                                    $save->stage = 1;
+                                    $save->level = 1;
+                                    $save->position = 'left';
 
-                       //add into transaction history
-                       $newTransaction = new Transaction();
-                       $newTransaction->user_id = $id;
-                       $newTransaction->description = "ETM upgrade";
-                       $newTransaction->amount = 100;
-                       $newTransaction->save();
-                       //update package
-                       User::where('id', $id)->update(['Package'=> 'ETM']);
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "ETM upgrade";
+                                    $newTransaction->amount = 100;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'ETM']);
+                                }
 
-                }else{
-                    //enter without parent and root
-                    $save = new ETM();
-                    $save->user_id = $id;
-                    $save->status = 'uncleared';
-                    $save->parent_id = 0;
-                    $save->root_id= 0;
-                    $save->stage = 1;
-                    $save->level = $level;
-                    $save->position = $position;
+                            }else{
+                                //auto pair
+                                    // auto pair
+                                $n_parent = ETM::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                                //check position
+                            if(count($n_parent)>0) {
+                                    if($n_parent[0]->position == 'left'){
+                                    $position = 'right';
+                                    $level = 1;
 
-                      //add into transaction history
-                      $newTransaction = new Transaction();
-                      $newTransaction->user_id = $id;
-                      $newTransaction->description = "ETM upgrade";
-                      $newTransaction->amount = 100;
-                      $newTransaction->save();
-                      //update package
-                      User::where('id', $id)->update(['Package'=> 'ETM']);
-                }
-                    
-                }
-            }else{
-                $msg = $parent. ' is not a registered user';
-                echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
-            }
+                                }else{
+                                    $position = 'left';
+                                    $level = 2;
+                                }
+                                //enter without parent and root
+                                $save = new ETM();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = $n_parent[0]->user_id;
+                                $save->root_id= $n_parent[0]->parent_id;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
 
-        }else if($package == 'EL'){
-              //check if parent is in the package currently
-              $check = User::where('username', $parent)->get();
-              if(count($check)> 0){
-                  if($check[0]->Package == 'EL'){
-                     //check stage
-                     $che = EL::where('user_id', $check[0]->id)->where('stage', 1)->get();
-                     //if parent is the package
-                     if(count($che)> 0){
-                         //now check position where user is parent
-                         $checkPos = EL::where('parent_id', $check[0]->id)->get();
-                         if (count($checkPos) > 0){
-                             //enter details
-                             $save = new EL();
-                             $save->user_id = $id;
-                             $save->status = 'uncleared';
-                             $save->parent_id = $check[0]->id;
-                             $save->root_id= $che[0]->parent_id;
-                             $save->stage = 1;
-                             $save->level = 2;
-                             $save->position = 'right';
-                             $save->save();
-  
-                             //add into transaction history
-                             $newTransaction = new Transaction();
-                             $newTransaction->user_id = $id;
-                             $newTransaction->description = "EL upgrade";
-                             $newTransaction->amount = 200;
-                             $newTransaction->save();
-                             //update package
-                             User::where('id', $id)->update(['Package'=> 'EL']);
-        
-  
-                         }else if(count($check)> 1){
-                             //auto pair
+                                //add into transaction history
+                                $newTransaction = new Transaction();
+                                $newTransaction->user_id = $id;
+                                $newTransaction->description = "ETM upgrade";
+                                $newTransaction->amount = 100;
+                                $newTransaction->save();
+                                //update package
+                                User::where('id', $id)->update(['Package'=> 'ETM']);
+
+                            }else{
+                                //enter without parent and root
+                                $save = new ETM();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = 0;
+                                $save->root_id= 0;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+
+                                //add into transaction history
+                                $newTransaction = new Transaction();
+                                $newTransaction->user_id = $id;
+                                $newTransaction->description = "ETM upgrade";
+                                $newTransaction->amount = 100;
+                                $newTransaction->save();
+                                //update package
+                                User::where('id', $id)->update(['Package'=> 'ETM']);
+                            }
+                                
+                            }
+                            }else{
                                 // auto pair
-                      $n_parent = EL::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                      //check position
-                     if(count($n_parent)>0) {
-                          if($n_parent[0]->position == 'left'){
-                          $position = 'right';
-                          $level = 1;
-  
-                      }else{
-                          $position = 'left';
-                          $level = 2;
-                      }
-                       //enter without parent and root
-                       $save = new EL();
-                       $save->user_id = $id;
-                       $save->status = 'uncleared';
-                       $save->parent_id = $n_parent[0]->user_id;
-                       $save->root_id= $n_parent[0]->parent_id;
-                       $save->stage = 1;
-                       $save->level = $level;
-                       $save->position = $position;
-  
-                         //add into transaction history
-                         $newTransaction = new Transaction();
-                         $newTransaction->user_id = $id;
-                         $newTransaction->description = "ETM EL";
-                         $newTransaction->amount = 200;
-                         $newTransaction->save();
-                         //update package
-                         User::where('id', $id)->update(['Package'=> 'EL']);
-  
-                  }else{
-                      //enter without parent and root
-                      $save = new EL();
-                      $save->user_id = $id;
-                      $save->status = 'uncleared';
-                      $save->parent_id = 0;
-                      $save->root_id= 0;
-                      $save->stage = 1;
-                      $save->level = $level;
-                      $save->position = $position;
-  
-                        //add into transaction history
-                        $newTransaction = new Transaction();
-                        $newTransaction->user_id = $id;
-                        $newTransaction->description = "EL upgrade";
-                        $newTransaction->amount = 200;
-                        $newTransaction->save();
-                        //update package
-                        User::where('id', $id)->update(['Package'=> 'EL']);
-                  }
-                      
-                  
-                           
-  
-                         }else{
-                          $save = new EL();
-                          $save->user_id = $id;
-                          $save->status = 'uncleared';
-                          $save->parent_id = $check[0]->id;
-                          $save->root_id= $che[0]->parent_id;
-                          $save->stage = 1;
-                          $save->level = 1;
-                          $save->position = 'left';
-  
-                            //add into transaction history
-                            $newTransaction = new Transaction();
-                            $newTransaction->user_id = $id;
-                            $newTransaction->description = "EL upgrade";
-                            $newTransaction->amount = 200;
-                            $newTransaction->save();
-                            //update package
-                            User::where('id', $id)->update(['Package'=> 'EL']);
-                         }
-  
-                     }else{
-                         //auto pair
-                            // auto pair
-                      $n_parent = EL::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                      //check position
-                     if(count($n_parent)>0) {
-                          if($n_parent[0]->position == 'left'){
-                          $position = 'right';
-                          $level = 1;
-  
-                      }else{
-                          $position = 'left';
-                          $level = 2;
-                      }
-                       //enter without parent and root
-                       $save = new EL();
-                       $save->user_id = $id;
-                       $save->status = 'uncleared';
-                       $save->parent_id = $n_parent[0]->user_id;
-                       $save->root_id= $n_parent[0]->parent_id;
-                       $save->stage = 1;
-                       $save->level = $level;
-                       $save->position = $position;
-  
-                         //add into transaction history
-                         $newTransaction = new Transaction();
-                         $newTransaction->user_id = $id;
-                         $newTransaction->description = "EL upgrade";
-                         $newTransaction->amount = 200;
-                         $newTransaction->save();
-                         //update package
-                         User::where('id', $id)->update(['Package'=> 'EL']);
-  
-                  }else{
-                      //enter without parent and root
-                      $save = new EL();
-                      $save->user_id = $id;
-                      $save->status = 'uncleared';
-                      $save->parent_id = 0;
-                      $save->root_id= 0;
-                      $save->stage = 1;
-                      $save->level = $level;
-                      $save->position = $position;
-  
-                        //add into transaction history
-                        $newTransaction = new Transaction();
-                        $newTransaction->user_id = $id;
-                        $newTransaction->description = "EL upgrade";
-                        $newTransaction->amount = 200;
-                        $newTransaction->save();
-                        //update package
-                        User::where('id', $id)->update(['Package'=> 'EL']);
-                  }
-                      
-                     }
-                  }else{
-                      // auto pair
-                      $n_parent = EL::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                      //check position
-                     if(count($n_parent)>0) {
-                          if($n_parent[0]->position == 'left'){
-                          $position = 'right';
-                          $level = 1;
-  
-                      }else{
-                          $position = 'left';
-                          $level = 2;
-                      }
-                       //enter without parent and root
-                       $save = new EL();
-                       $save->user_id = $id;
-                       $save->status = 'uncleared';
-                       $save->parent_id = $n_parent[0]->user_id;
-                       $save->root_id= $n_parent[0]->parent_id;
-                       $save->stage = 1;
-                       $save->level = $level;
-                       $save->position = $position;
-  
-                         //add into transaction history
-                         $newTransaction = new Transaction();
-                         $newTransaction->user_id = $id;
-                         $newTransaction->description = "EL upgrade";
-                         $newTransaction->amount = 200;
-                         $newTransaction->save();
-                         //update package
-                         User::where('id', $id)->update(['Package'=> 'EL']);
-  
-                  }else{
-                      //enter without parent and root
-                      $save = new EL();
-                      $save->user_id = $id;
-                      $save->status = 'uncleared';
-                      $save->parent_id = 0;
-                      $save->root_id= 0;
-                      $save->stage = 1;
-                      $save->level = $level;
-                      $save->position = $position;
-  
-                        //add into transaction history
-                        $newTransaction = new Transaction();
-                        $newTransaction->user_id = $id;
-                        $newTransaction->description = "EL upgrade";
-                        $newTransaction->amount = 200;
-                        $newTransaction->save();
-                        //update package
-                        User::where('id', $id)->update(['Package'=> 'EL']);
-                  }
-                      
-                  }
-              }else{
-                  $msg = $parent. ' is not a registered user';
-                  echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
-              }
+                                $n_parent = ETM::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                                //check position
+                            if(count($n_parent)>0) {
+                                    if($n_parent[0]->position == 'left'){
+                                    $position = 'right';
+                                    $level = 1;
 
+                                }else{
+                                    $position = 'left';
+                                    $level = 2;
+                                }
+                                //enter without parent and root
+                                $save = new ETM();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = $n_parent[0]->user_id;
+                                $save->root_id= $n_parent[0]->parent_id;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
 
-        }else if($package == 'ED'){
-             //check if parent is in the package currently
-             $check = User::where('username', $parent)->get();
-             if(count($check)> 0){
-                 if($check[0]->Package == 'ED'){
-                    //check stage
-                    $che = ED::where('user_id', $check[0]->id)->where('stage', 1)->get();
-                    //if parent is the package
-                    if(count($che)> 0){
-                        //now check position where user is parent
-                        $checkPos = ED::where('parent_id', $check[0]->id)->get();
-                        if (count($checkPos) > 0){
-                            //enter details
-                            $save = new ED();
-                            $save->user_id = $id;
-                            $save->status = 'uncleared';
-                            $save->parent_id = $check[0]->id;
-                            $save->root_id= $che[0]->parent_id;
-                            $save->stage = 1;
-                            $save->level = 2;
-                            $save->position = 'right';
-                            $save->save();
- 
-                            //add into transaction history
-                            $newTransaction = new Transaction();
-                            $newTransaction->user_id = $id;
-                            $newTransaction->description = "ED upgrade";
-                            $newTransaction->amount = 200;
-                            $newTransaction->save();
-                            //update package
-                            User::where('id', $id)->update(['Package'=> 'ED']);
-       
- 
-                        }else if(count($check)> 1){
-                            //auto pair
-                               // auto pair
-                     $n_parent = ED::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                     //check position
-                    if(count($n_parent)>0) {
-                         if($n_parent[0]->position == 'left'){
-                         $position = 'right';
-                         $level = 1;
- 
-                     }else{
-                         $position = 'left';
-                         $level = 2;
-                     }
-                      //enter without parent and root
-                      $save = new ED();
-                      $save->user_id = $id;
-                      $save->status = 'uncleared';
-                      $save->parent_id = $n_parent[0]->user_id;
-                      $save->root_id= $n_parent[0]->parent_id;
-                      $save->stage = 1;
-                      $save->level = $level;
-                      $save->position = $position;
- 
-                        //add into transaction history
-                        $newTransaction = new Transaction();
-                        $newTransaction->user_id = $id;
-                        $newTransaction->description = "ED Upgrade";
-                        $newTransaction->amount = 300;
-                        $newTransaction->save();
-                        //update package
-                        User::where('id', $id)->update(['Package'=> 'ED']);
- 
-                 }else{
-                     //enter without parent and root
-                     $save = new ED();
-                     $save->user_id = $id;
-                     $save->status = 'uncleared';
-                     $save->parent_id = 0;
-                     $save->root_id= 0;
-                     $save->stage = 1;
-                     $save->level = $level;
-                     $save->position = $position;
- 
-                       //add into transaction history
-                       $newTransaction = new Transaction();
-                       $newTransaction->user_id = $id;
-                       $newTransaction->description = "ED upgrade";
-                       $newTransaction->amount = 300;
-                       $newTransaction->save();
-                       //update package
-                       User::where('id', $id)->update(['Package'=> 'ED']);
-                 }
-                     
-                 
-                          
- 
+                                //add into transaction history
+                                $newTransaction = new Transaction();
+                                $newTransaction->user_id = $id;
+                                $newTransaction->description = "ETM upgrade";
+                                $newTransaction->amount = 100;
+                                $newTransaction->save();
+                                //update package
+                                User::where('id', $id)->update(['Package'=> 'ETM']);
+
+                            }else{
+                                //enter without parent and root
+                                $save = new ETM();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = 0;
+                                $save->root_id= 0;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+
+                                //add into transaction history
+                                $newTransaction = new Transaction();
+                                $newTransaction->user_id = $id;
+                                $newTransaction->description = "ETM upgrade";
+                                $newTransaction->amount = 100;
+                                $newTransaction->save();
+                                //update package
+                                User::where('id', $id)->update(['Package'=> 'ETM']);
+                            }
+                                
+                            }
                         }else{
-                         $save = new ED();
-                         $save->user_id = $id;
-                         $save->status = 'uncleared';
-                         $save->parent_id = $check[0]->id;
-                         $save->root_id= $che[0]->parent_id;
-                         $save->stage = 1;
-                         $save->level = 1;
-                         $save->position = 'left';
- 
-                           //add into transaction history
-                           $newTransaction = new Transaction();
-                           $newTransaction->user_id = $id;
-                           $newTransaction->description = "ED upgrade";
-                           $newTransaction->amount = 300;
-                           $newTransaction->save();
-                           //update package
-                           User::where('id', $id)->update(['Package'=> 'ED']);
+                            $msg = $parent. ' is not a registered user';
+                            echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
                         }
- 
-                    }else{
-                        //auto pair
-                           // auto pair
-                     $n_parent = ED::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                     //check position
-                    if(count($n_parent)>0) {
-                         if($n_parent[0]->position == 'left'){
-                         $position = 'right';
-                         $level = 1;
- 
-                     }else{
-                         $position = 'left';
-                         $level = 2;
-                     }
-                      //enter without parent and root
-                      $save = new ED();
-                      $save->user_id = $id;
-                      $save->status = 'uncleared';
-                      $save->parent_id = $n_parent[0]->user_id;
-                      $save->root_id= $n_parent[0]->parent_id;
-                      $save->stage = 1;
-                      $save->level = $level;
-                      $save->position = $position;
- 
-                        //add into transaction history
-                        $newTransaction = new Transaction();
-                        $newTransaction->user_id = $id;
-                        $newTransaction->description = "ED upgrade";
-                        $newTransaction->amount = 300;
-                        $newTransaction->save();
-                        //update package
-                        User::where('id', $id)->update(['Package'=> 'ED']);
- 
-                 }else{
-                     //enter without parent and root
-                     $save = new ED();
-                     $save->user_id = $id;
-                     $save->status = 'uncleared';
-                     $save->parent_id = 0;
-                     $save->root_id= 0;
-                     $save->stage = 1;
-                     $save->level = $level;
-                     $save->position = $position;
- 
-                       //add into transaction history
-                       $newTransaction = new Transaction();
-                       $newTransaction->user_id = $id;
-                       $newTransaction->description = "ED upgrade";
-                       $newTransaction->amount = 300;
-                       $newTransaction->save();
-                       //update package
-                       User::where('id', $id)->update(['Package'=> 'ED']);
-                 }
-                     
-                    }
-                 }else{
-                     // auto pair
-                     $n_parent = ED::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                     //check position
-                    if(count($n_parent)>0) {
-                         if($n_parent[0]->position == 'left'){
-                         $position = 'right';
-                         $level = 1;
- 
-                     }else{
-                         $position = 'left';
-                         $level = 2;
-                     }
-                      //enter without parent and root
-                      $save = new ED();
-                      $save->user_id = $id;
-                      $save->status = 'uncleared';
-                      $save->parent_id = $n_parent[0]->user_id;
-                      $save->root_id= $n_parent[0]->parent_id;
-                      $save->stage = 1;
-                      $save->level = $level;
-                      $save->position = $position;
- 
-                        //add into transaction history
-                        $newTransaction = new Transaction();
-                        $newTransaction->user_id = $id;
-                        $newTransaction->description = "ED upgrade";
-                        $newTransaction->amount = 300;
-                        $newTransaction->save();
-                        //update package
-                        User::where('id', $id)->update(['Package'=> 'ED']);
- 
-                 }else{
-                     //enter without parent and root
-                     $save = new ED();
-                     $save->user_id = $id;
-                     $save->status = 'uncleared';
-                     $save->parent_id = 0;
-                     $save->root_id= 0;
-                     $save->stage = 1;
-                     $save->level = $level;
-                     $save->position = $position;
- 
-                       //add into transaction history
-                       $newTransaction = new Transaction();
-                       $newTransaction->user_id = $id;
-                       $newTransaction->description = "ED upgrade";
-                       $newTransaction->amount = 300;
-                       $newTransaction->save();
-                       //update package
-                       User::where('id', $id)->update(['Package'=> 'ED']);
-                 }
-                     
-                 }
-             }else{
-                 $msg = $parent. ' is not a registered user';
-                 echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
-             }
 
-
-        }else if ($package == 'RD'){
-             //check if parent is in the package currently
-             $check = User::where('username', $parent)->get();
-             if(count($check)> 0){
-                 if($check[0]->Package == 'RD'){
-                    //check stage
-                    $che = RD::where('user_id', $check[0]->id)->where('stage', 1)->get();
-                    //if parent is the package
-                    if(count($che)> 0){
-                        //now check position where user is parent
-                        $checkPos = RD::where('parent_id', $check[0]->id)->get();
-                        if (count($checkPos) > 0){
-                            //enter details
-                            $save = new RD();
-                            $save->user_id = $id;
-                            $save->status = 'uncleared';
-                            $save->parent_id = $check[0]->id;
-                            $save->root_id= $che[0]->parent_id;
-                            $save->stage = 1;
-                            $save->level = 2;
-                            $save->position = 'right';
-                            $save->save();
- 
-                            //add into transaction history
-                            $newTransaction = new Transaction();
-                            $newTransaction->user_id = $id;
-                            $newTransaction->description = "RD upgrade";
-                            $newTransaction->amount = 600;
-                            $newTransaction->save();
-                            //update package
-                            User::where('id', $id)->update(['Package'=> 'RD']);
-       
- 
-                        }else if(count($check)> 1){
-                            //auto pair
-                               // auto pair
-                     $n_parent = RD::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                     //check position
-                    if(count($n_parent)>0) {
-                         if($n_parent[0]->position == 'left'){
-                         $position = 'right';
-                         $level = 1;
- 
-                     }else{
-                         $position = 'left';
-                         $level = 2;
-                     }
-                      //enter without parent and root
-                      $save = new RD();
-                      $save->user_id = $id;
-                      $save->status = 'uncleared';
-                      $save->parent_id = $n_parent[0]->user_id;
-                      $save->root_id= $n_parent[0]->parent_id;
-                      $save->stage = 1;
-                      $save->level = $level;
-                      $save->position = $position;
- 
-                        //add into transaction history
-                        $newTransaction = new Transaction();
-                        $newTransaction->user_id = $id;
-                        $newTransaction->description = "RD upgrade";
-                        $newTransaction->amount = 600;
-                        $newTransaction->save();
-                        //update package
-                        User::where('id', $id)->update(['Package'=> 'RD']);
- 
-                 }else{
-                     //enter without parent and root
-                     $save = new RD();
-                     $save->user_id = $id;
-                     $save->status = 'uncleared';
-                     $save->parent_id = 0;
-                     $save->root_id= 0;
-                     $save->stage = 1;
-                     $save->level = $level;
-                     $save->position = $position;
- 
-                       //add into transaction history
-                       $newTransaction = new Transaction();
-                       $newTransaction->user_id = $id;
-                       $newTransaction->description = "RD upgrade";
-                       $newTransaction->amount = 600;
-                       $newTransaction->save();
-                       //update package
-                       User::where('id', $id)->update(['Package'=> 'RD']);
-                 }
-                     
-                 
-                          
- 
-                        }else{
-                         $save = new RD();
-                         $save->user_id = $id;
-                         $save->status = 'uncleared';
-                         $save->parent_id = $check[0]->id;
-                         $save->root_id= $che[0]->parent_id;
-                         $save->stage = 1;
-                         $save->level = 1;
-                         $save->position = 'left';
- 
-                           //add into transaction history
-                           $newTransaction = new Transaction();
-                           $newTransaction->user_id = $id;
-                           $newTransaction->description = "RD upgrade";
-                           $newTransaction->amount = 600;
-                           $newTransaction->save();
-                           //update package
-                           User::where('id', $id)->update(['Package'=> 'RD']);
-                        }
- 
-                    }else{
-                        //auto pair
-                           // auto pair
-                     $n_parent = RD::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                     //check position
-                    if(count($n_parent)>0) {
-                         if($n_parent[0]->position == 'left'){
-                         $position = 'right';
-                         $level = 1;
- 
-                     }else{
-                         $position = 'left';
-                         $level = 2;
-                     }
-                      //enter without parent and root
-                      $save = new RD();
-                      $save->user_id = $id;
-                      $save->status = 'uncleared';
-                      $save->parent_id = $n_parent[0]->user_id;
-                      $save->root_id= $n_parent[0]->parent_id;
-                      $save->stage = 1;
-                      $save->level = $level;
-                      $save->position = $position;
- 
-                        //add into transaction history
-                        $newTransaction = new Transaction();
-                        $newTransaction->user_id = $id;
-                        $newTransaction->description = "RD upgrade";
-                        $newTransaction->amount = 600;
-                        $newTransaction->save();
-                        //update package
-                        User::where('id', $id)->update(['Package'=> 'RD']);
- 
-                 }else{
-                     //enter without parent and root
-                     $save = new RD();
-                     $save->user_id = $id;
-                     $save->status = 'uncleared';
-                     $save->parent_id = 0;
-                     $save->root_id= 0;
-                     $save->stage = 1;
-                     $save->level = $level;
-                     $save->position = $position;
- 
-                       //add into transaction history
-                       $newTransaction = new Transaction();
-                       $newTransaction->user_id = $id;
-                       $newTransaction->description = "RD upgrade";
-                       $newTransaction->amount = 600;
-                       $newTransaction->save();
-                       //update package
-                       User::where('id', $id)->update(['Package'=> 'RD']);
-                 }
-                     
-                    }
-                 }else{
-                     // auto pair
-                     $n_parent = RD::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                     //check position
-                    if(count($n_parent)>0) {
-                         if($n_parent[0]->position == 'left'){
-                         $position = 'right';
-                         $level = 1;
- 
-                     }else{
-                         $position = 'left';
-                         $level = 2;
-                     }
-                      //enter without parent and root
-                      $save = new RD();
-                      $save->user_id = $id;
-                      $save->status = 'uncleared';
-                      $save->parent_id = $n_parent[0]->user_id;
-                      $save->root_id= $n_parent[0]->parent_id;
-                      $save->stage = 1;
-                      $save->level = $level;
-                      $save->position = $position;
- 
-                        //add into transaction history
-                        $newTransaction = new Transaction();
-                        $newTransaction->user_id = $id;
-                        $newTransaction->description = "RD upgrade";
-                        $newTransaction->amount = 600;
-                        $newTransaction->save();
-                        //update package
-                        User::where('id', $id)->update(['Package'=> 'RD']);
- 
-                 }else{
-                     //enter without parent and root
-                     $save = new RD();
-                     $save->user_id = $id;
-                     $save->status = 'uncleared';
-                     $save->parent_id = 0;
-                     $save->root_id= 0;
-                     $save->stage = 1;
-                     $save->level = $level;
-                     $save->position = $position;
- 
-                       //add into transaction history
-                       $newTransaction = new Transaction();
-                       $newTransaction->user_id = $id;
-                       $newTransaction->description = "RD upgrade";
-                       $newTransaction->amount = 600;
-                       $newTransaction->save();
-                       //update package
-                       User::where('id', $id)->update(['Package'=> 'RD']);
-                 }
-                     
-                 }
-             }else{
-                 $msg = $parent. ' is not a registered user';
-                 echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
-             }
-
-
-        }else if ($package == 'ND'){
-            //check if parent is in the package currently
-            $check = User::where('username', $parent)->get();
-            if(count($check)> 0){
-                if($check[0]->Package == 'ND'){
-                   //check stage
-                   $che = ND::where('user_id', $check[0]->id)->where('stage', 1)->get();
-                   //if parent is the package
-                   if(count($che)> 0){
-                       //now check position where user is parent
-                       $checkPos = ND::where('parent_id', $check[0]->id)->get();
-                       if (count($checkPos) > 0){
-                           //enter details
-                           $save = new ND();
-                           $save->user_id = $id;
-                           $save->status = 'uncleared';
-                           $save->parent_id = $check[0]->id;
-                           $save->root_id= $che[0]->parent_id;
-                           $save->stage = 1;
-                           $save->level = 2;
-                           $save->position = 'right';
-                           $save->save();
-
-                           //add into transaction history
-                           $newTransaction = new Transaction();
-                           $newTransaction->user_id = $id;
-                           $newTransaction->description = "ND upgrade";
-                           $newTransaction->amount = 1250;
-                           $newTransaction->save();
-                           //update package
-                           User::where('id', $id)->update(['Package'=> 'ND']);
-      
-
-                       }else if(count($check)> 1){
-                           //auto pair
-                              // auto pair
-                    $n_parent = ND::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                    //check position
-                   if(count($n_parent)>0) {
-                        if($n_parent[0]->position == 'left'){
-                        $position = 'right';
-                        $level = 1;
 
                     }else{
-                        $position = 'left';
-                        $level = 2;
+                        $msg ='Payment not successful!!! Kindly fund Your printmoney Account with sufficient amount';
+                        echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
                     }
-                     //enter without parent and root
-                     $save = new ND();
-                     $save->user_id = $id;
-                     $save->status = 'uncleared';
-                     $save->parent_id = $n_parent[0]->user_id;
-                     $save->root_id= $n_parent[0]->parent_id;
-                     $save->stage = 1;
-                     $save->level = $level;
-                     $save->position = $position;
-
-                       //add into transaction history
-                       $newTransaction = new Transaction();
-                       $newTransaction->user_id = $id;
-                       $newTransaction->description = "ND upgrade";
-                       $newTransaction->amount = 1250;
-                       $newTransaction->save();
-                       //update package
-                       User::where('id', $id)->update(['Package'=> 'ND']);
 
                 }else{
-                    //enter without parent and root
-                    $save = new ND();
-                    $save->user_id = $id;
-                    $save->status = 'uncleared';
-                    $save->parent_id = 0;
-                    $save->root_id= 0;
-                    $save->stage = 1;
-                    $save->level = $level;
-                    $save->position = $position;
-
-                      //add into transaction history
-                      $newTransaction = new Transaction();
-                      $newTransaction->user_id = $id;
-                      $newTransaction->description = "ND upgrade";
-                      $newTransaction->amount = 1250;
-                      $newTransaction->save();
-                      //update package
-                      User::where('id', $id)->update(['Package'=> 'ND']);
+                    $msg ='Payment not successful!!! Kindly fund Your printmoney Account with sufficient amount';
+                    echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
                 }
+
+            
+        }else if($package == 'EL'){
+                //make api call here
+                $dat = [
+                    'p_email' => $p_email,
+                    'amount' => 80000,
+                    'p_password' => $p_password
+                ];              
+                $url = 'https://api.printmoneyng.com/paymoney';
+    
+                $curl = curl_init($url);
+                    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $dat);
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                $makePayment = curl_exec($curl);
+                
+                $payment = json_decode($makePayment);
+                
+                if($payment){
+                    if($payment->status == 'ok'){
+
+                             //check if parent is in the package currently
+                        $check = User::where('username', $parent)->get();
+                        if(count($check)> 0){
+                            if($check[0]->Package == 'EL'){
+                                //check stage
+                                $che = EL::where('user_id', $check[0]->id)->where('stage', 1)->get();
+                                //if parent is the package
+                                if(count($che)> 0){
+                                    //now check position where user is parent
+                                    $checkPos = EL::where('parent_id', $check[0]->id)->get();
+                                    if (count($checkPos) > 0){
+                                        //enter details
+                                        $save = new EL();
+                                        $save->user_id = $id;
+                                        $save->status = 'uncleared';
+                                        $save->parent_id = $check[0]->id;
+                                        $save->root_id= $che[0]->parent_id;
+                                        $save->stage = 1;
+                                        $save->level = 2;
+                                        $save->position = 'right';
+                                        $save->save();
+            
+                                        //add into transaction history
+                                        $newTransaction = new Transaction();
+                                        $newTransaction->user_id = $id;
+                                        $newTransaction->description = "EL upgrade";
+                                        $newTransaction->amount = 200;
+                                        $newTransaction->save();
+                                        //update package
+                                        User::where('id', $id)->update(['Package'=> 'EL']);
+                    
+            
+                                    }else if(count($check)> 1){
+                                        //auto pair
+                                            // auto pair
+                                $n_parent = EL::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                                //check position
+                                if(count($n_parent)>0) {
+                                    if($n_parent[0]->position == 'left'){
+                                    $position = 'right';
+                                    $level = 1;
+            
+                                }else{
+                                    $position = 'left';
+                                    $level = 2;
+                                }
+                                //enter without parent and root
+                                $save = new EL();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = $n_parent[0]->user_id;
+                                $save->root_id= $n_parent[0]->parent_id;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+            
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "ETM EL";
+                                    $newTransaction->amount = 200;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'EL']);
+            
+                            }else{
+                                //enter without parent and root
+                                $save = new EL();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = 0;
+                                $save->root_id= 0;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+            
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "EL upgrade";
+                                    $newTransaction->amount = 200;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'EL']);
+                            }
+                                
+                            
+                                    
+            
+                                    }else{
+                                    $save = new EL();
+                                    $save->user_id = $id;
+                                    $save->status = 'uncleared';
+                                    $save->parent_id = $check[0]->id;
+                                    $save->root_id= $che[0]->parent_id;
+                                    $save->stage = 1;
+                                    $save->level = 1;
+                                    $save->position = 'left';
+            
+                                        //add into transaction history
+                                        $newTransaction = new Transaction();
+                                        $newTransaction->user_id = $id;
+                                        $newTransaction->description = "EL upgrade";
+                                        $newTransaction->amount = 200;
+                                        $newTransaction->save();
+                                        //update package
+                                        User::where('id', $id)->update(['Package'=> 'EL']);
+                                    }
+            
+                                }else{
+                                    //auto pair
+                                        // auto pair
+                                $n_parent = EL::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                                //check position
+                                if(count($n_parent)>0) {
+                                    if($n_parent[0]->position == 'left'){
+                                    $position = 'right';
+                                    $level = 1;
+            
+                                }else{
+                                    $position = 'left';
+                                    $level = 2;
+                                }
+                                //enter without parent and root
+                                $save = new EL();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = $n_parent[0]->user_id;
+                                $save->root_id= $n_parent[0]->parent_id;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+            
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "EL upgrade";
+                                    $newTransaction->amount = 200;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'EL']);
+            
+                            }else{
+                                //enter without parent and root
+                                $save = new EL();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = 0;
+                                $save->root_id= 0;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+            
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "EL upgrade";
+                                    $newTransaction->amount = 200;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'EL']);
+                            }
+                                
+                                }
+                            }else{
+                                // auto pair
+                                $n_parent = EL::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                                //check position
+                                if(count($n_parent)>0) {
+                                    if($n_parent[0]->position == 'left'){
+                                    $position = 'right';
+                                    $level = 1;
+            
+                                }else{
+                                    $position = 'left';
+                                    $level = 2;
+                                }
+                                //enter without parent and root
+                                $save = new EL();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = $n_parent[0]->user_id;
+                                $save->root_id= $n_parent[0]->parent_id;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+            
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "EL upgrade";
+                                    $newTransaction->amount = 200;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'EL']);
+            
+                            }else{
+                                //enter without parent and root
+                                $save = new EL();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = 0;
+                                $save->root_id= 0;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+            
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "EL upgrade";
+                                    $newTransaction->amount = 200;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'EL']);
+                            }
+                                
+                            }
+                        }else{
+                            $msg = $parent. ' is not a registered user';
+                            echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
+                        }
+
+
+
+                    }else{
+                        $msg ='Payment not successful!!! Kindly fund Your printmoney Account with sufficient amount';
+                        echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
+                    }
+
+                }else{
+                    $msg ='Payment not successful!!! Kindly fund Your printmoney Account with sufficient amount';
+                    echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
+                }
+
+
+             
+        }else if($package == 'ED'){
+
+                //make api call here
+                $dat = [
+                    'p_email' => $p_email,
+                    'amount' => 120000,
+                    'p_password' => $p_password
+                ];              
+                $url = 'https://api.printmoneyng.com/paymoney';
+    
+                $curl = curl_init($url);
+                    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $dat);
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                $makePayment = curl_exec($curl);
+                
+                $payment = json_decode($makePayment);
+                
+                if($payment){
+                    if($payment->status == 'ok'){
+                            //check if parent is in the package currently
+                            $check = User::where('username', $parent)->get();
+                            if(count($check)> 0){
+                                if($check[0]->Package == 'ED'){
+                                    //check stage
+                                    $che = ED::where('user_id', $check[0]->id)->where('stage', 1)->get();
+                                    //if parent is the package
+                                    if(count($che)> 0){
+                                        //now check position where user is parent
+                                        $checkPos = ED::where('parent_id', $check[0]->id)->get();
+                                        if (count($checkPos) > 0){
+                                            //enter details
+                                            $save = new ED();
+                                            $save->user_id = $id;
+                                            $save->status = 'uncleared';
+                                            $save->parent_id = $check[0]->id;
+                                            $save->root_id= $che[0]->parent_id;
+                                            $save->stage = 1;
+                                            $save->level = 2;
+                                            $save->position = 'right';
+                                            $save->save();
+                
+                                            //add into transaction history
+                                            $newTransaction = new Transaction();
+                                            $newTransaction->user_id = $id;
+                                            $newTransaction->description = "ED upgrade";
+                                            $newTransaction->amount = 200;
+                                            $newTransaction->save();
+                                            //update package
+                                            User::where('id', $id)->update(['Package'=> 'ED']);
                     
                 
-                         
+                                        }else if(count($check)> 1){
+                                            //auto pair
+                                            // auto pair
+                                    $n_parent = ED::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                                    //check position
+                                    if(count($n_parent)>0) {
+                                        if($n_parent[0]->position == 'left'){
+                                        $position = 'right';
+                                        $level = 1;
+                
+                                    }else{
+                                        $position = 'left';
+                                        $level = 2;
+                                    }
+                                    //enter without parent and root
+                                    $save = new ED();
+                                    $save->user_id = $id;
+                                    $save->status = 'uncleared';
+                                    $save->parent_id = $n_parent[0]->user_id;
+                                    $save->root_id= $n_parent[0]->parent_id;
+                                    $save->stage = 1;
+                                    $save->level = $level;
+                                    $save->position = $position;
+                
+                                        //add into transaction history
+                                        $newTransaction = new Transaction();
+                                        $newTransaction->user_id = $id;
+                                        $newTransaction->description = "ED Upgrade";
+                                        $newTransaction->amount = 300;
+                                        $newTransaction->save();
+                                        //update package
+                                        User::where('id', $id)->update(['Package'=> 'ED']);
+                
+                                }else{
+                                    //enter without parent and root
+                                    $save = new ED();
+                                    $save->user_id = $id;
+                                    $save->status = 'uncleared';
+                                    $save->parent_id = 0;
+                                    $save->root_id= 0;
+                                    $save->stage = 1;
+                                    $save->level = $level;
+                                    $save->position = $position;
+                
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "ED upgrade";
+                                    $newTransaction->amount = 300;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'ED']);
+                                }
+                                    
+                                
+                                        
+                
+                                        }else{
+                                        $save = new ED();
+                                        $save->user_id = $id;
+                                        $save->status = 'uncleared';
+                                        $save->parent_id = $check[0]->id;
+                                        $save->root_id= $che[0]->parent_id;
+                                        $save->stage = 1;
+                                        $save->level = 1;
+                                        $save->position = 'left';
+                
+                                        //add into transaction history
+                                        $newTransaction = new Transaction();
+                                        $newTransaction->user_id = $id;
+                                        $newTransaction->description = "ED upgrade";
+                                        $newTransaction->amount = 300;
+                                        $newTransaction->save();
+                                        //update package
+                                        User::where('id', $id)->update(['Package'=> 'ED']);
+                                        }
+                
+                                    }else{
+                                        //auto pair
+                                        // auto pair
+                                    $n_parent = ED::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                                    //check position
+                                    if(count($n_parent)>0) {
+                                        if($n_parent[0]->position == 'left'){
+                                        $position = 'right';
+                                        $level = 1;
+                
+                                    }else{
+                                        $position = 'left';
+                                        $level = 2;
+                                    }
+                                    //enter without parent and root
+                                    $save = new ED();
+                                    $save->user_id = $id;
+                                    $save->status = 'uncleared';
+                                    $save->parent_id = $n_parent[0]->user_id;
+                                    $save->root_id= $n_parent[0]->parent_id;
+                                    $save->stage = 1;
+                                    $save->level = $level;
+                                    $save->position = $position;
+                
+                                        //add into transaction history
+                                        $newTransaction = new Transaction();
+                                        $newTransaction->user_id = $id;
+                                        $newTransaction->description = "ED upgrade";
+                                        $newTransaction->amount = 300;
+                                        $newTransaction->save();
+                                        //update package
+                                        User::where('id', $id)->update(['Package'=> 'ED']);
+                
+                                }else{
+                                    //enter without parent and root
+                                    $save = new ED();
+                                    $save->user_id = $id;
+                                    $save->status = 'uncleared';
+                                    $save->parent_id = 0;
+                                    $save->root_id= 0;
+                                    $save->stage = 1;
+                                    $save->level = $level;
+                                    $save->position = $position;
+                
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "ED upgrade";
+                                    $newTransaction->amount = 300;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'ED']);
+                                }
+                                    
+                                    }
+                                }else{
+                                    // auto pair
+                                    $n_parent = ED::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                                    //check position
+                                    if(count($n_parent)>0) {
+                                        if($n_parent[0]->position == 'left'){
+                                        $position = 'right';
+                                        $level = 1;
+                
+                                    }else{
+                                        $position = 'left';
+                                        $level = 2;
+                                    }
+                                    //enter without parent and root
+                                    $save = new ED();
+                                    $save->user_id = $id;
+                                    $save->status = 'uncleared';
+                                    $save->parent_id = $n_parent[0]->user_id;
+                                    $save->root_id= $n_parent[0]->parent_id;
+                                    $save->stage = 1;
+                                    $save->level = $level;
+                                    $save->position = $position;
+                
+                                        //add into transaction history
+                                        $newTransaction = new Transaction();
+                                        $newTransaction->user_id = $id;
+                                        $newTransaction->description = "ED upgrade";
+                                        $newTransaction->amount = 300;
+                                        $newTransaction->save();
+                                        //update package
+                                        User::where('id', $id)->update(['Package'=> 'ED']);
+                
+                                }else{
+                                    //enter without parent and root
+                                    $save = new ED();
+                                    $save->user_id = $id;
+                                    $save->status = 'uncleared';
+                                    $save->parent_id = 0;
+                                    $save->root_id= 0;
+                                    $save->stage = 1;
+                                    $save->level = $level;
+                                    $save->position = $position;
+                
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "ED upgrade";
+                                    $newTransaction->amount = 300;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'ED']);
+                                }
+                                    
+                                }
+                            }else{
+                                $msg = $parent. ' is not a registered user';
+                                echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
+                            }
 
-                       }else{
-                        $save = new ND();
-                        $save->user_id = $id;
-                        $save->status = 'uncleared';
-                        $save->parent_id = $check[0]->id;
-                        $save->root_id= $che[0]->parent_id;
-                        $save->stage = 1;
-                        $save->level = 1;
-                        $save->position = 'left';
 
-                          //add into transaction history
-                          $newTransaction = new Transaction();
-                          $newTransaction->user_id = $id;
-                          $newTransaction->description = "ND upgrade";
-                          $newTransaction->amount = 1250;
-                          $newTransaction->save();
-                          //update package
-                          User::where('id', $id)->update(['Package'=> 'ND']);
-                       }
-
-                   }else{
-                       //auto pair
-                          // auto pair
-                    $n_parent = ND::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                    //check position
-                   if(count($n_parent)>0) {
-                        if($n_parent[0]->position == 'left'){
-                        $position = 'right';
-                        $level = 1;
 
                     }else{
-                        $position = 'left';
-                        $level = 2;
+                        $msg ='Payment not successful!!! Kindly fund Your printmoney Account with sufficient amount';
+                        echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
                     }
-                     //enter without parent and root
-                     $save = new ND();
-                     $save->user_id = $id;
-                     $save->status = 'uncleared';
-                     $save->parent_id = $n_parent[0]->user_id;
-                     $save->root_id= $n_parent[0]->parent_id;
-                     $save->stage = 1;
-                     $save->level = $level;
-                     $save->position = $position;
-
-                       //add into transaction history
-                       $newTransaction = new Transaction();
-                       $newTransaction->user_id = $id;
-                       $newTransaction->description = "ND upgrade";
-                       $newTransaction->amount = 1250;
-                       $newTransaction->save();
-                       //update package
-                       User::where('id', $id)->update(['Package'=> 'ND']);
 
                 }else{
-                    //enter without parent and root
-                    $save = new ND();
-                    $save->user_id = $id;
-                    $save->status = 'uncleared';
-                    $save->parent_id = 0;
-                    $save->root_id= 0;
-                    $save->stage = 1;
-                    $save->level = $level;
-                    $save->position = $position;
-
-                      //add into transaction history
-                      $newTransaction = new Transaction();
-                      $newTransaction->user_id = $id;
-                      $newTransaction->description = "ND upgrade";
-                      $newTransaction->amount = 1250;
-                      $newTransaction->save();
-                      //update package
-                      User::where('id', $id)->update(['Package'=> 'ND']);
+                    $msg ='Payment not successful!!! Kindly fund Your printmoney Account with sufficient amount';
+                    echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
                 }
-                    
-                   }
-                }else{
-                    // auto pair
-                    $n_parent = ND::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                    //check position
-                   if(count($n_parent)>0) {
-                        if($n_parent[0]->position == 'left'){
-                        $position = 'right';
-                        $level = 1;
-
-                    }else{
-                        $position = 'left';
-                        $level = 2;
-                    }
-                     //enter without parent and root
-                     $save = new  ND();
-                     $save->user_id = $id;
-                     $save->status = 'uncleared';
-                     $save->parent_id = $n_parent[0]->user_id;
-                     $save->root_id= $n_parent[0]->parent_id;
-                     $save->stage = 1;
-                     $save->level = $level;
-                     $save->position = $position;
-
-                       //add into transaction history
-                       $newTransaction = new Transaction();
-                       $newTransaction->user_id = $id;
-                       $newTransaction->description = "ND upgrade";
-                       $newTransaction->amount = 1250;
-                       $newTransaction->save();
-                       //update package
-                       User::where('id', $id)->update(['Package'=> 'ND']);
-
-                }else{
-                    //enter without parent and root
-                    $save = new ND();
-                    $save->user_id = $id;
-                    $save->status = 'uncleared';
-                    $save->parent_id = 0;
-                    $save->root_id= 0;
-                    $save->stage = 1;
-                    $save->level = $level;
-                    $save->position = $position;
-
-                      //add into transaction history
-                      $newTransaction = new Transaction();
-                      $newTransaction->user_id = $id;
-                      $newTransaction->description = "ND upgrade";
-                      $newTransaction->amount = 1250;
-                      $newTransaction->save();
-                      //update package
-                      User::where('id', $id)->update(['Package'=> 'ND']);
-                }
-                    
-                }
-            }else{
-                $msg = $parent. ' is not a registered user';
-                echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
-            }
 
 
-       }else if ($package == 'RVP'){
-        //check if parent is in the package currently
-        $check = User::where('username', $parent)->get();
-        if(count($check)> 0){
-            if($check[0]->Package == 'RVP'){
-               //check stage
-               $che = RVP::where('user_id', $check[0]->id)->where('stage', 1)->get();
-               //if parent is the package
-               if(count($che)> 0){
-                   //now check position where user is parent
-                   $checkPos = RVP::where('parent_id', $check[0]->id)->get();
-                   if (count($checkPos) > 0){
-                       //enter details
-                       $save = new RVP();
-                       $save->user_id = $id;
-                       $save->status = 'uncleared';
-                       $save->parent_id = $check[0]->id;
-                       $save->root_id= $che[0]->parent_id;
-                       $save->stage = 1;
-                       $save->level = 2;
-                       $save->position = 'right';
-                       $save->save();
 
-                       //add into transaction history
-                       $newTransaction = new Transaction();
-                       $newTransaction->user_id = $id;
-                       $newTransaction->description = "RVP upgrade";
-                       $newTransaction->amount = 2500;
-                       $newTransaction->save();
-                       //update package
-                       User::where('id', $id)->update(['Package'=> 'RVP']);
-  
+             
+        }else if ($package == 'RD'){
+                //make api call here
+                $dat = [
+                    'p_email' => $p_email,
+                    'amount' => 240000,
+                    'p_password' => $p_password
+                ];              
+                $url = 'https://api.printmoneyng.com/paymoney';
+    
+                $curl = curl_init($url);
+                    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $dat);
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                $makePayment = curl_exec($curl);
+                
+                $payment = json_decode($makePayment);
+                
+                if($payment){
+                    if($payment->status == 'ok'){
 
-                   }else if(count($check)> 1){
-                       //auto pair
-                          // auto pair
-                $n_parent = RVP::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                //check position
-               if(count($n_parent)>0) {
-                    if($n_parent[0]->position == 'left'){
-                    $position = 'right';
-                    $level = 1;
-
-                }else{
-                    $position = 'left';
-                    $level = 2;
-                }
-                 //enter without parent and root
-                 $save = new RVP();
-                 $save->user_id = $id;
-                 $save->status = 'uncleared';
-                 $save->parent_id = $n_parent[0]->user_id;
-                 $save->root_id= $n_parent[0]->parent_id;
-                 $save->stage = 1;
-                 $save->level = $level;
-                 $save->position = $position;
-
-                   //add into transaction history
-                   $newTransaction = new Transaction();
-                   $newTransaction->user_id = $id;
-                   $newTransaction->description = "RVP upgrade";
-                   $newTransaction->amount = 2500;
-                   $newTransaction->save();
-                   //update package
-                   User::where('id', $id)->update(['Package'=> 'RVP']);
-
-            }else{
-                //enter without parent and root
-                $save = new RD();
-                $save->user_id = $id;
-                $save->status = 'uncleared';
-                $save->parent_id = 0;
-                $save->root_id= 0;
-                $save->stage = 1;
-                $save->level = $level;
-                $save->position = $position;
-
-                  //add into transaction history
-                  $newTransaction = new Transaction();
-                  $newTransaction->user_id = $id;
-                  $newTransaction->description = "RVP upgrade";
-                  $newTransaction->amount = 2500;
-                  $newTransaction->save();
-                  //update package
-                  User::where('id', $id)->update(['Package'=> 'RVP']);
-            }
+                                            //check if parent is in the package currently
+                        $check = User::where('username', $parent)->get();
+                        if(count($check)> 0){
+                            if($check[0]->Package == 'RD'){
+                                //check stage
+                                $che = RD::where('user_id', $check[0]->id)->where('stage', 1)->get();
+                                //if parent is the package
+                                if(count($che)> 0){
+                                    //now check position where user is parent
+                                    $checkPos = RD::where('parent_id', $check[0]->id)->get();
+                                    if (count($checkPos) > 0){
+                                        //enter details
+                                        $save = new RD();
+                                        $save->user_id = $id;
+                                        $save->status = 'uncleared';
+                                        $save->parent_id = $check[0]->id;
+                                        $save->root_id= $che[0]->parent_id;
+                                        $save->stage = 1;
+                                        $save->level = 2;
+                                        $save->position = 'right';
+                                        $save->save();
+            
+                                        //add into transaction history
+                                        $newTransaction = new Transaction();
+                                        $newTransaction->user_id = $id;
+                                        $newTransaction->description = "RD upgrade";
+                                        $newTransaction->amount = 600;
+                                        $newTransaction->save();
+                                        //update package
+                                        User::where('id', $id)->update(['Package'=> 'RD']);
                 
             
-                     
+                                    }else if(count($check)> 1){
+                                        //auto pair
+                                        // auto pair
+                                $n_parent = RD::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                                //check position
+                                if(count($n_parent)>0) {
+                                    if($n_parent[0]->position == 'left'){
+                                    $position = 'right';
+                                    $level = 1;
+            
+                                }else{
+                                    $position = 'left';
+                                    $level = 2;
+                                }
+                                //enter without parent and root
+                                $save = new RD();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = $n_parent[0]->user_id;
+                                $save->root_id= $n_parent[0]->parent_id;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+            
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "RD upgrade";
+                                    $newTransaction->amount = 600;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'RD']);
+            
+                            }else{
+                                //enter without parent and root
+                                $save = new RD();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = 0;
+                                $save->root_id= 0;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+            
+                                //add into transaction history
+                                $newTransaction = new Transaction();
+                                $newTransaction->user_id = $id;
+                                $newTransaction->description = "RD upgrade";
+                                $newTransaction->amount = 600;
+                                $newTransaction->save();
+                                //update package
+                                User::where('id', $id)->update(['Package'=> 'RD']);
+                            }
+                                
+                            
+                                    
+            
+                                    }else{
+                                    $save = new RD();
+                                    $save->user_id = $id;
+                                    $save->status = 'uncleared';
+                                    $save->parent_id = $check[0]->id;
+                                    $save->root_id= $che[0]->parent_id;
+                                    $save->stage = 1;
+                                    $save->level = 1;
+                                    $save->position = 'left';
+            
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "RD upgrade";
+                                    $newTransaction->amount = 600;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'RD']);
+                                    }
+            
+                                }else{
+                                    //auto pair
+                                    // auto pair
+                                $n_parent = RD::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                                //check position
+                                if(count($n_parent)>0) {
+                                    if($n_parent[0]->position == 'left'){
+                                    $position = 'right';
+                                    $level = 1;
+            
+                                }else{
+                                    $position = 'left';
+                                    $level = 2;
+                                }
+                                //enter without parent and root
+                                $save = new RD();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = $n_parent[0]->user_id;
+                                $save->root_id= $n_parent[0]->parent_id;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+            
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "RD upgrade";
+                                    $newTransaction->amount = 600;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'RD']);
+            
+                            }else{
+                                //enter without parent and root
+                                $save = new RD();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = 0;
+                                $save->root_id= 0;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+            
+                                //add into transaction history
+                                $newTransaction = new Transaction();
+                                $newTransaction->user_id = $id;
+                                $newTransaction->description = "RD upgrade";
+                                $newTransaction->amount = 600;
+                                $newTransaction->save();
+                                //update package
+                                User::where('id', $id)->update(['Package'=> 'RD']);
+                            }
+                                
+                                }
+                            }else{
+                                // auto pair
+                                $n_parent = RD::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                                //check position
+                                if(count($n_parent)>0) {
+                                    if($n_parent[0]->position == 'left'){
+                                    $position = 'right';
+                                    $level = 1;
+            
+                                }else{
+                                    $position = 'left';
+                                    $level = 2;
+                                }
+                                //enter without parent and root
+                                $save = new RD();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = $n_parent[0]->user_id;
+                                $save->root_id= $n_parent[0]->parent_id;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+            
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "RD upgrade";
+                                    $newTransaction->amount = 600;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'RD']);
+            
+                            }else{
+                                //enter without parent and root
+                                $save = new RD();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = 0;
+                                $save->root_id= 0;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+            
+                                //add into transaction history
+                                $newTransaction = new Transaction();
+                                $newTransaction->user_id = $id;
+                                $newTransaction->description = "RD upgrade";
+                                $newTransaction->amount = 600;
+                                $newTransaction->save();
+                                //update package
+                                User::where('id', $id)->update(['Package'=> 'RD']);
+                            }
+                                
+                            }
+                        }else{
+                            $msg = $parent. ' is not a registered user';
+                            echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
+                        }
 
-                   }else{
-                    $save = new RVP();
-                    $save->user_id = $id;
-                    $save->status = 'uncleared';
-                    $save->parent_id = $check[0]->id;
-                    $save->root_id= $che[0]->parent_id;
-                    $save->stage = 1;
-                    $save->level = 1;
-                    $save->position = 'left';
 
-                      //add into transaction history
-                      $newTransaction = new Transaction();
-                      $newTransaction->user_id = $id;
-                      $newTransaction->description = "RVP upgrade";
-                      $newTransaction->amount = 2500;
-                      $newTransaction->save();
-                      //update package
-                      User::where('id', $id)->update(['Package'=> 'RVP']);
-                   }
 
-               }else{
-                   //auto pair
-                      // auto pair
-                $n_parent = RVP::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                //check position
-               if(count($n_parent)>0) {
-                    if($n_parent[0]->position == 'left'){
-                    $position = 'right';
-                    $level = 1;
+                    }else{
+                        $msg ='Payment not successful!!! Kindly fund Your printmoney Account with sufficient amount';
+                        echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
+                    }
 
                 }else{
-                    $position = 'left';
-                    $level = 2;
+                    $msg ='Payment not successful!!! Kindly fund Your printmoney Account with sufficient amount';
+                    echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
                 }
-                 //enter without parent and root
-                 $save = new RVP();
-                 $save->user_id = $id;
-                 $save->status = 'uncleared';
-                 $save->parent_id = $n_parent[0]->user_id;
-                 $save->root_id= $n_parent[0]->parent_id;
-                 $save->stage = 1;
-                 $save->level = $level;
-                 $save->position = $position;
 
-                   //add into transaction history
-                   $newTransaction = new Transaction();
-                   $newTransaction->user_id = $id;
-                   $newTransaction->description = "RVP upgrade";
-                   $newTransaction->amount = 2500;
-                   $newTransaction->save();
-                   //update package
-                   User::where('id', $id)->update(['Package'=> 'RVP']);
 
-            }else{
-                //enter without parent and root
-                $save = new RVP();
-                $save->user_id = $id;
-                $save->status = 'uncleared';
-                $save->parent_id = 0;
-                $save->root_id= 0;
-                $save->stage = 1;
-                $save->level = $level;
-                $save->position = $position;
 
-                  //add into transaction history
-                  $newTransaction = new Transaction();
-                  $newTransaction->user_id = $id;
-                  $newTransaction->description = "RVP upgrade";
-                  $newTransaction->amount = 2500;
-                  $newTransaction->save();
-                  //update package
-                  User::where('id', $id)->update(['Package'=> 'RVP']);
-            }
+             
+        }else if ($package == 'ND'){
+                 //make api call here
+                 $dat = [
+                    'p_email' => $p_email,
+                    'amount' => 500000,
+                    'p_password' => $p_password
+                ];              
+                $url = 'https://api.printmoneyng.com/paymoney';
+    
+                $curl = curl_init($url);
+                    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $dat);
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                $makePayment = curl_exec($curl);
                 
-               }
-            }else{
-                // auto pair
-                $n_parent = RVP::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
-                //check position
-               if(count($n_parent)>0) {
-                    if($n_parent[0]->position == 'left'){
-                    $position = 'right';
-                    $level = 1;
+                $payment = json_decode($makePayment);
+                
+                if($payment){
+                    if($payment->status == 'ok'){
+
+                                    
+                        //check if parent is in the package currently
+                        $check = User::where('username', $parent)->get();
+                        if(count($check)> 0){
+                            if($check[0]->Package == 'ND'){
+                            //check stage
+                            $che = ND::where('user_id', $check[0]->id)->where('stage', 1)->get();
+                            //if parent is the package
+                            if(count($che)> 0){
+                                //now check position where user is parent
+                                $checkPos = ND::where('parent_id', $check[0]->id)->get();
+                                if (count($checkPos) > 0){
+                                    //enter details
+                                    $save = new ND();
+                                    $save->user_id = $id;
+                                    $save->status = 'uncleared';
+                                    $save->parent_id = $check[0]->id;
+                                    $save->root_id= $che[0]->parent_id;
+                                    $save->stage = 1;
+                                    $save->level = 2;
+                                    $save->position = 'right';
+                                    $save->save();
+
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "ND upgrade";
+                                    $newTransaction->amount = 1250;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'ND']);
+                
+
+                                }else if(count($check)> 1){
+                                    //auto pair
+                                        // auto pair
+                                $n_parent = ND::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                                //check position
+                            if(count($n_parent)>0) {
+                                    if($n_parent[0]->position == 'left'){
+                                    $position = 'right';
+                                    $level = 1;
+
+                                }else{
+                                    $position = 'left';
+                                    $level = 2;
+                                }
+                                //enter without parent and root
+                                $save = new ND();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = $n_parent[0]->user_id;
+                                $save->root_id= $n_parent[0]->parent_id;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+
+                                //add into transaction history
+                                $newTransaction = new Transaction();
+                                $newTransaction->user_id = $id;
+                                $newTransaction->description = "ND upgrade";
+                                $newTransaction->amount = 1250;
+                                $newTransaction->save();
+                                //update package
+                                User::where('id', $id)->update(['Package'=> 'ND']);
+
+                            }else{
+                                //enter without parent and root
+                                $save = new ND();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = 0;
+                                $save->root_id= 0;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+
+                                //add into transaction history
+                                $newTransaction = new Transaction();
+                                $newTransaction->user_id = $id;
+                                $newTransaction->description = "ND upgrade";
+                                $newTransaction->amount = 1250;
+                                $newTransaction->save();
+                                //update package
+                                User::where('id', $id)->update(['Package'=> 'ND']);
+                            }
+                                
+                            
+                                    
+
+                                }else{
+                                    $save = new ND();
+                                    $save->user_id = $id;
+                                    $save->status = 'uncleared';
+                                    $save->parent_id = $check[0]->id;
+                                    $save->root_id= $che[0]->parent_id;
+                                    $save->stage = 1;
+                                    $save->level = 1;
+                                    $save->position = 'left';
+
+                                    //add into transaction history
+                                    $newTransaction = new Transaction();
+                                    $newTransaction->user_id = $id;
+                                    $newTransaction->description = "ND upgrade";
+                                    $newTransaction->amount = 1250;
+                                    $newTransaction->save();
+                                    //update package
+                                    User::where('id', $id)->update(['Package'=> 'ND']);
+                                }
+
+                            }else{
+                                //auto pair
+                                    // auto pair
+                                $n_parent = ND::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                                //check position
+                            if(count($n_parent)>0) {
+                                    if($n_parent[0]->position == 'left'){
+                                    $position = 'right';
+                                    $level = 1;
+
+                                }else{
+                                    $position = 'left';
+                                    $level = 2;
+                                }
+                                //enter without parent and root
+                                $save = new ND();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = $n_parent[0]->user_id;
+                                $save->root_id= $n_parent[0]->parent_id;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+
+                                //add into transaction history
+                                $newTransaction = new Transaction();
+                                $newTransaction->user_id = $id;
+                                $newTransaction->description = "ND upgrade";
+                                $newTransaction->amount = 1250;
+                                $newTransaction->save();
+                                //update package
+                                User::where('id', $id)->update(['Package'=> 'ND']);
+
+                            }else{
+                                //enter without parent and root
+                                $save = new ND();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = 0;
+                                $save->root_id= 0;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+
+                                //add into transaction history
+                                $newTransaction = new Transaction();
+                                $newTransaction->user_id = $id;
+                                $newTransaction->description = "ND upgrade";
+                                $newTransaction->amount = 1250;
+                                $newTransaction->save();
+                                //update package
+                                User::where('id', $id)->update(['Package'=> 'ND']);
+                            }
+                                
+                            }
+                            }else{
+                                // auto pair
+                                $n_parent = ND::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                                //check position
+                            if(count($n_parent)>0) {
+                                    if($n_parent[0]->position == 'left'){
+                                    $position = 'right';
+                                    $level = 1;
+
+                                }else{
+                                    $position = 'left';
+                                    $level = 2;
+                                }
+                                //enter without parent and root
+                                $save = new  ND();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = $n_parent[0]->user_id;
+                                $save->root_id= $n_parent[0]->parent_id;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+
+                                //add into transaction history
+                                $newTransaction = new Transaction();
+                                $newTransaction->user_id = $id;
+                                $newTransaction->description = "ND upgrade";
+                                $newTransaction->amount = 1250;
+                                $newTransaction->save();
+                                //update package
+                                User::where('id', $id)->update(['Package'=> 'ND']);
+
+                            }else{
+                                //enter without parent and root
+                                $save = new ND();
+                                $save->user_id = $id;
+                                $save->status = 'uncleared';
+                                $save->parent_id = 0;
+                                $save->root_id= 0;
+                                $save->stage = 1;
+                                $save->level = $level;
+                                $save->position = $position;
+
+                                //add into transaction history
+                                $newTransaction = new Transaction();
+                                $newTransaction->user_id = $id;
+                                $newTransaction->description = "ND upgrade";
+                                $newTransaction->amount = 1250;
+                                $newTransaction->save();
+                                //update package
+                                User::where('id', $id)->update(['Package'=> 'ND']);
+                            }
+                                
+                            }
+                        }else{
+                            $msg = $parent. ' is not a registered user';
+                            echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
+                        }
+
+
+
+
+                    }else{
+                        $msg ='Payment not successful!!! Kindly fund Your printmoney Account with sufficient amount';
+                        echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
+                    }
 
                 }else{
-                    $position = 'left';
-                    $level = 2;
+                    $msg ='Payment not successful!!! Kindly fund Your printmoney Account with sufficient amount';
+                    echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
                 }
-                 //enter without parent and root
-                 $save = new RVP();
-                 $save->user_id = $id;
-                 $save->status = 'uncleared';
-                 $save->parent_id = $n_parent[0]->user_id;
-                 $save->root_id= $n_parent[0]->parent_id;
-                 $save->stage = 1;
-                 $save->level = $level;
-                 $save->position = $position;
 
-                   //add into transaction history
-                   $newTransaction = new Transaction();
-                   $newTransaction->user_id = $id;
-                   $newTransaction->description = "RVP upgrade";
-                   $newTransaction->amount = 2500;
-                   $newTransaction->save();
-                   //update package
-                   User::where('id', $id)->update(['Package'=> 'RVP']);
+       }else if ($package == 'RVP'){
+
+                //make api call here
+            $dat = [
+                'p_email' => $p_email,
+                'amount' => 1000000,
+                'p_password' => $p_password
+            ];              
+            $url = 'https://api.printmoneyng.com/paymoney';
+
+            $curl = curl_init($url);
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $dat);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            $makePayment = curl_exec($curl);
+            
+            $payment = json_decode($makePayment);
+
+            if ($payment){
+                if($payment->status == 'ok'){
+                            //check if parent is in the package currently
+                $check = User::where('username', $parent)->get();
+                if(count($check)> 0){
+                    if($check[0]->Package == 'RVP'){
+                    //check stage
+                    $che = RVP::where('user_id', $check[0]->id)->where('stage', 1)->get();
+                    //if parent is the package
+                    if(count($che)> 0){
+                        //now check position where user is parent
+                        $checkPos = RVP::where('parent_id', $check[0]->id)->get();
+                        if (count($checkPos) > 0){
+                            //enter details
+                            $save = new RVP();
+                            $save->user_id = $id;
+                            $save->status = 'uncleared';
+                            $save->parent_id = $check[0]->id;
+                            $save->root_id= $che[0]->parent_id;
+                            $save->stage = 1;
+                            $save->level = 2;
+                            $save->position = 'right';
+                            $save->save();
+
+                            //add into transaction history
+                            $newTransaction = new Transaction();
+                            $newTransaction->user_id = $id;
+                            $newTransaction->description = "RVP upgrade";
+                            $newTransaction->amount = 2500;
+                            $newTransaction->save();
+                            //update package
+                            User::where('id', $id)->update(['Package'=> 'RVP']);
+        
+
+                        }else if(count($check)> 1){
+                            //auto pair
+                                // auto pair
+                        $n_parent = RVP::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                        //check position
+                    if(count($n_parent)>0) {
+                            if($n_parent[0]->position == 'left'){
+                            $position = 'right';
+                            $level = 1;
+
+                        }else{
+                            $position = 'left';
+                            $level = 2;
+                        }
+                        //enter without parent and root
+                        $save = new RVP();
+                        $save->user_id = $id;
+                        $save->status = 'uncleared';
+                        $save->parent_id = $n_parent[0]->user_id;
+                        $save->root_id= $n_parent[0]->parent_id;
+                        $save->stage = 1;
+                        $save->level = $level;
+                        $save->position = $position;
+
+                        //add into transaction history
+                        $newTransaction = new Transaction();
+                        $newTransaction->user_id = $id;
+                        $newTransaction->description = "RVP upgrade";
+                        $newTransaction->amount = 2500;
+                        $newTransaction->save();
+                        //update package
+                        User::where('id', $id)->update(['Package'=> 'RVP']);
+
+                    }else{
+                        //enter without parent and root
+                        $save = new RVP();
+                        $save->user_id = $id;
+                        $save->status = 'uncleared';
+                        $save->parent_id = 0;
+                        $save->root_id= 0;
+                        $save->stage = 1;
+                        $save->level = $level;
+                        $save->position = $position;
+
+                        //add into transaction history
+                        $newTransaction = new Transaction();
+                        $newTransaction->user_id = $id;
+                        $newTransaction->description = "RVP upgrade";
+                        $newTransaction->amount = 2500;
+                        $newTransaction->save();
+                        //update package
+                        User::where('id', $id)->update(['Package'=> 'RVP']);
+                    }
+                        
+                    
+                            
+
+                        }else{
+                            $save = new RVP();
+                            $save->user_id = $id;
+                            $save->status = 'uncleared';
+                            $save->parent_id = $check[0]->id;
+                            $save->root_id= $che[0]->parent_id;
+                            $save->stage = 1;
+                            $save->level = 1;
+                            $save->position = 'left';
+
+                            //add into transaction history
+                            $newTransaction = new Transaction();
+                            $newTransaction->user_id = $id;
+                            $newTransaction->description = "RVP upgrade";
+                            $newTransaction->amount = 2500;
+                            $newTransaction->save();
+                            //update package
+                            User::where('id', $id)->update(['Package'=> 'RVP']);
+                        }
+
+                    }else{
+                        //auto pair
+                            // auto pair
+                        $n_parent = RVP::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                        //check position
+                    if(count($n_parent)>0) {
+                            if($n_parent[0]->position == 'left'){
+                            $position = 'right';
+                            $level = 1;
+
+                        }else{
+                            $position = 'left';
+                            $level = 2;
+                        }
+                        //enter without parent and root
+                        $save = new RVP();
+                        $save->user_id = $id;
+                        $save->status = 'uncleared';
+                        $save->parent_id = $n_parent[0]->user_id;
+                        $save->root_id= $n_parent[0]->parent_id;
+                        $save->stage = 1;
+                        $save->level = $level;
+                        $save->position = $position;
+
+                        //add into transaction history
+                        $newTransaction = new Transaction();
+                        $newTransaction->user_id = $id;
+                        $newTransaction->description = "RVP upgrade";
+                        $newTransaction->amount = 2500;
+                        $newTransaction->save();
+                        //update package
+                        User::where('id', $id)->update(['Package'=> 'RVP']);
+
+                    }else{
+                        //enter without parent and root
+                        $save = new RVP();
+                        $save->user_id = $id;
+                        $save->status = 'uncleared';
+                        $save->parent_id = 0;
+                        $save->root_id= 0;
+                        $save->stage = 1;
+                        $save->level = $level;
+                        $save->position = $position;
+
+                        //add into transaction history
+                        $newTransaction = new Transaction();
+                        $newTransaction->user_id = $id;
+                        $newTransaction->description = "RVP upgrade";
+                        $newTransaction->amount = 2500;
+                        $newTransaction->save();
+                        //update package
+                        User::where('id', $id)->update(['Package'=> 'RVP']);
+                    }
+                        
+                    }
+                    }else{
+                        // auto pair
+                        $n_parent = RVP::where('status', 'uncleared')->where('level', '<', 2)->get()->first();
+                        //check position
+                    if(count($n_parent)>0) {
+                            if($n_parent[0]->position == 'left'){
+                            $position = 'right';
+                            $level = 1;
+
+                        }else{
+                            $position = 'left';
+                            $level = 2;
+                        }
+                        //enter without parent and root
+                        $save = new RVP();
+                        $save->user_id = $id;
+                        $save->status = 'uncleared';
+                        $save->parent_id = $n_parent[0]->user_id;
+                        $save->root_id= $n_parent[0]->parent_id;
+                        $save->stage = 1;
+                        $save->level = $level;
+                        $save->position = $position;
+
+                        //add into transaction history
+                        $newTransaction = new Transaction();
+                        $newTransaction->user_id = $id;
+                        $newTransaction->description = "RVP upgrade";
+                        $newTransaction->amount = 2500;
+                        $newTransaction->save();
+                        //update package
+                        User::where('id', $id)->update(['Package'=> 'RVP']);
+
+                    }else{
+                        //enter without parent and root
+                        $save = new RVP();
+                        $save->user_id = $id;
+                        $save->status = 'uncleared';
+                        $save->parent_id = 0;
+                        $save->root_id= 0;
+                        $save->stage = 1;
+                        $save->level = $level;
+                        $save->position = $position;
+
+                        //add into transaction history
+                        $newTransaction = new Transaction();
+                        $newTransaction->user_id = $id;
+                        $newTransaction->description = "RVP upgrade";
+                        $newTransaction->amount = 2500;
+                        $newTransaction->save();
+                        //update package
+                        User::where('id', $id)->update(['Package'=> 'RVP']);
+                    }
+                        
+                    }
+                }else{
+                    $msg = $parent. ' is not a registered user';
+                    echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
+                }
+
+                }else{
+                    $msg = 'Payment not successful kindly fund your printmoney account';
+                    echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
+                }
 
             }else{
-                //enter without parent and root
-                $save = new RD();
-                $save->user_id = $id;
-                $save->status = 'uncleared';
-                $save->parent_id = 0;
-                $save->root_id= 0;
-                $save->stage = 1;
-                $save->level = $level;
-                $save->position = $position;
+                $msg = 'Payment not successful kindly fund your printmoney account';
+                echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
+            }
 
-                  //add into transaction history
-                  $newTransaction = new Transaction();
-                  $newTransaction->user_id = $id;
-                  $newTransaction->description = "RVP upgrade";
-                  $newTransaction->amount = 2500;
-                  $newTransaction->save();
-                  //update package
-                  User::where('id', $id)->update(['Package'=> 'RVP']);
-            }
-                
-            }
-        }else{
-            $msg = $parent. ' is not a registered user';
-            echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
-        }
 
 
    }else if ($package == 'GVP'){
     //check if parent is in the package currently
-    $check = User::where('username', $parent)->get();
+     //make api call here
+     $dat = [
+        'p_email' => $p_email,
+        'amount' => 5000000,
+        'p_password' => $p_password
+    ];              
+    $url = 'https://api.printmoneyng.com/paymoney';
+
+    $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $dat);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    $makePayment = curl_exec($curl);
+    
+    $payment = json_decode($makePayment);
+
+    if ($payment){
+        if($payment->status == 'ok'){
+
+            $check = User::where('username', $parent)->get();
     if(count($check)> 0){
         if($check[0]->Package == 'GVP'){
            //check stage
@@ -1615,6 +1827,17 @@ class UgradesController extends Controller
         echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
     }
 
+
+        }else{
+            $msg = 'Payment not successful!!! Kindly fund your printmoney account';
+            echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
+
+        }
+    }else{
+        $msg = 'Payment not successful!!! Kindly fund your printmoney account';
+         echo "<script>alert('$msg'); window.location=('/upgrade');</script>";
+    }
+    
 
 }
         

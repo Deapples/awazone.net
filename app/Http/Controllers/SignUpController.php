@@ -94,7 +94,7 @@ class SignUpController extends Controller
                 'amount' => 10500,
                 'p_password' => $p_password
             ];              
-            $url = 'http://api.printmoney.com/paymoney';
+            $url = 'http://api.printmoneyng.com/paymoney';
 
             $curl = curl_init($url);
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');

@@ -19,6 +19,8 @@
             <form method="POST" action="/package">
                 {{@csrf_field()}}
                 <input type="text" name="refer" placeholder="Enter Your referral username" required /><br />
+                <input type="email" name="p_email" placeholder="Enter Your printMoney Email" required /><br />
+                <input type="password" name="p_password" placeholder="Enter Your PrintMoney Password" required /><br />
                 @if ($data->Package == 'AIBO')
                     <input type="text" value="$100" id="price" name="price" disabled/>
                     <select name='package' required>

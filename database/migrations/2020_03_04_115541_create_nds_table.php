@@ -15,6 +15,13 @@ class CreateNdsTable extends Migration
     {
         Schema::create('nds', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('user_id',false,11);
+            $table->string('status');
+            $table->string('parent_id');
+            $table->string('root_id');
+            $table->enum('position',['left', 'right','float']);
+            $table->string('stage');
+            $table->string('level');
             $table->timestamps();
         });
     }

@@ -65,3 +65,10 @@ Route::get('/incentives', 'IncentivesController@showIncentive');
 Route::post('/package', 'UgradesController@createPackage');
 
 Route::get('/test', 'TestsController@sayHello');
+
+
+Route::get('/packagepayment', 'PaymentsController@packagesPayment');
+
+Route::get('/forgetpassword', 'ForgetPasswordsController@forgetPassword');
+
+Route::post('/resetpassword', 'ForgetPasswordsController@resetPassword');

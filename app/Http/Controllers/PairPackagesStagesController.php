@@ -33,7 +33,7 @@ class PairPackagesStagesController extends Controller
                     $pair->parent_id = $parent->user_id;
                     $pair->root_id = $parent->parent_id;
                     $pair->level = 2;
-                    $pair->status = 'cleared';
+                    $pair->status = 'uncleared';
                     $pair->position = 'right';
                     $pair->stage = $stage;
                     $pair->save();
